@@ -1,4 +1,4 @@
-import { Card, Element } from "./Card.js";
+import { Card } from "./Card.js";
 import { UserPointer } from "./UserPointer.js";
 import { Player, PLAYER_TYPE } from "./Player.js";
 

@@ -3,7 +3,6 @@ import { MainMenuState } from "./states/MainMenuState.js";
 import { PlayState } from "./states/PlayState.js";
 import { Game } from "./classes/Game.js";
 import { Player } from "./classes/Player.js";
-import { Renderer } from "./classes/renderer/Renderer.js";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
@@ -13,9 +12,6 @@ canvas.height = window.innerHeight;
 const player1 = new Player("Player 1");
 const player2 = new Player("Player 2");
 const game = new Game(player1, player2);
-const renderer = new Renderer(ctx);
-
-
 
 const stateMachine = new StateMachine();
 

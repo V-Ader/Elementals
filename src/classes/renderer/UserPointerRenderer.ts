@@ -7,14 +7,6 @@ export class UserPointerRenderer {
     constructor(private ctx: CanvasRenderingContext2D, private cardRenderer: CardRenderer) {}
 
     render(controller: UserPointer, inputController: InputController) {
-        // Draw the circle
-        // this.ctx.beginPath();
-        // this.ctx.arc(inputController.mousePosition.x, inputController.mousePosition.y, 50, 0, Math.PI * 2);
-        // this.ctx.fillStyle = 'blue';
-        // this.ctx.fill(); // Fill the circle
-        // this.ctx.lineWidth = 2;
-        // this.ctx.strokeStyle = 'black';
-        // this.ctx.stroke(); // Outline the circle
         if (controller.card !== Card.getEmpty()) {
             this.cardRenderer.render(controller.card, {x: inputController.mousePosition.x, y: inputController.mousePosition.y});
         }
