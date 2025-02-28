@@ -16,7 +16,7 @@ export class UserPointerRenderer {
         // this.ctx.strokeStyle = 'black';
         // this.ctx.stroke(); // Outline the circle
         if (controller.card !== Card.getEmpty()) {
-            this.cardRenderer.render(controller.card, inputController.mousePosition.x, inputController.mousePosition.y);
+            this.cardRenderer.render(controller.card, {x: inputController.mousePosition.x, y: inputController.mousePosition.y});
         }
     }
 }

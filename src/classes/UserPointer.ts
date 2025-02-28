@@ -1,5 +1,8 @@
 import { Card } from "./Card.js";
 
 export class UserPointer {
-    constructor(public card: Card = Card.getEmpty()) {}
+    public last_take_position = 0;
+    constructor(public card: Card = Card.getEmpty()) {
+        console.log("UserPointer created");
+    }
 }

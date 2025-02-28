@@ -18,42 +18,51 @@ export class GameRenderer {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         // Render enemy cards in play
-        this.renderCardGroup(game.enemy_cards, 200, 100, "Enemy Cards");
+        this.renderOpponentCards(game);
 
         // Render player cards in play
-        this.renderCardGroup(game.player_cards, 200, this.ctx.canvas.height / 2 - 100, "Player Cards");
+        this.renderPlayerCards(game);
 
         // Render player hand
-        this.renderCardGroup(game.player1.cardsInPlay, 100, this.ctx.canvas.height - 200, "Player Hand");
+        this.renderPlayerHandCards(game);
 
         // Render user pointer
         this.userPointerRenderer.render(game.userPointer, inputController);
     }
 
-    private renderCardGroup(cards: Card[], startX: number, startY: number, label: string) {
-        const spacing = 120; // Spacing between cards
-        const cardWidth = 100;
-        const cardHeight = 150;
-
-        // Draw label
-        this.ctx.fillStyle = "#000";
-        this.ctx.font = "20px Arial";
-        this.ctx.fillText(label, startX, startY - 20);
-
-        // Render each card at a calculated position
-        cards.forEach((card, index) => {
-            const x = startX + index * spacing; // Horizontal position
-            const y = startY; // Vertical position
-            this.cardRenderer.render(card, x, y, cardWidth, cardHeight);
-        });
+    private renderOpponentCards(game: Game) {
+        for (let i = 0; i < game.enemy_cards.length; i++) {
+            this.cardRenderer.render(game.enemy_cards[i], this.getOpponentCardPosition(i));
+        } 
     }
 
-    getCardPosition(card: Card) {
-        // Logic to get the card's position
-        // This is a placeholder implementation
-        const cardIndex = this.ctx.canvas.height - 200; // Example calculation
-        const x = 100 + cardIndex * 120; // Example calculation
-        const y = this.ctx.canvas.height - 200; // Example calculation
+    public getOpponentCardPosition(cardNumber: number) {
+        const x = 200 + cardNumber * 120;
+        const y = 100;
+        return { x, y, width: 100, height: 150 };
+    }
+
+    private renderPlayerCards(game: Game) {
+        for (let i = 0; i < game.player_cards.length; i++) {
+            this.cardRenderer.render(game.player_cards[i], this.getPlayerCardPosition(i));
+        }    
+    }
+
+    public getPlayerCardPosition(cardNumber: number) {
+        const x = 200 + cardNumber * 120;
+        const y = this.ctx.canvas.height / 2 - 100;
+        return { x, y, width: 100, height: 150 };
+    }
+
+    private renderPlayerHandCards(game: Game) {
+        for (let i = 0; i < game.player1.cardsInPlay.length; i++) {
+            this.cardRenderer.render(game.player1.cardsInPlay[i], this.getPlayerHandCardPosition(i));
+        }
+    }
+
+    public getPlayerHandCardPosition(cardNumber: number) {
+        const x = 100 + cardNumber * 120;
+        const y = this.ctx.canvas.height - 200;
         return { x, y, width: 100, height: 150 };
     }
 }

@@ -1,9 +1,15 @@
 import { Card } from "../Card.js";
 
 export class CardRenderer {
+    public cardProperties = {
+        width: 100,
+        height: 150,
+        cornerRadius: 10,
+    };
+
     constructor(private ctx: CanvasRenderingContext2D) {}
 
-    render(card: Card, x: number, y: number, width = 100, height = 150) {
+    render(card: Card, {x, y}: {x: number, y: number}, width = this.cardProperties.width, height = this.cardProperties.height) {
         // Draw card background
         this.drawCardBackground(x, y, width, height);
 
