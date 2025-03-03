@@ -17,8 +17,6 @@ export class MainMenuState implements State {
         this.ctx.textAlign = "center";
         this.ctx.fillText("MENU", window.innerWidth / 2, 100);
         this.ctx.fillText("Click to Start", window.innerWidth / 2, 200);
-
-        console.log('hello');
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {

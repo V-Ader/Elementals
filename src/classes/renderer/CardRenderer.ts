@@ -15,6 +15,9 @@ export class CardRenderer {
 
         // Draw card symbol
         this.drawCardSymbol(card, x, y, width, height);
+
+        // Draw card risk
+        this.drawCardRisk(card, x, y, width, height);
     }
 
     private drawCardBackground(x: number, y: number, width: number, height: number) {
@@ -73,4 +76,13 @@ export class CardRenderer {
         this.ctx.quadraticCurveTo(x, y, x + radius, y);
         this.ctx.closePath();
     }
+
+    private drawCardRisk(card: Card, x: number, y: number, width: number, height: number) {
+        this.ctx.fillStyle = "black";
+        this.ctx.font = "20px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(card.data.risk.toString(), x + width / 2, y + height - 20);
+    }
+
 }

@@ -6,6 +6,8 @@ import { State } from "../classes/StateMachine.js";
 export class PlayState implements State {
     private inputController: InputController;
 
+    private waitForNewTurn = false;
+
     constructor(
         private ctx: CanvasRenderingContext2D,
         private canvas: HTMLCanvasElement,
@@ -20,8 +22,35 @@ export class PlayState implements State {
     }
 
     update(deltaTime: number) {
+        if (this.waitForNewTurn) {
+            return;
+        }
         this.game.playTurn();
         this.game.update(deltaTime);
+
+        if (this.game.isGameOver()) {
+            console.log("Game Over");
+            this.waitForNewTurn = true;
+            
+            // sleep for 1 second
+            setTimeout(() => {
+                this.game.startNewGame(); 
+                this.waitForNewTurn = false;
+            }, 1000);
+        }
+
+        if (this.game.isTurnOver()) {
+            this.waitForNewTurn = true;
+
+            console.log("Turn Over");
+            this.game.resolveTheBoard();
+
+            // sleep for 1 second
+            setTimeout(() => {
+                this.game.startNewTurn(); 
+                this.waitForNewTurn = false;
+            }, 1000);
+        }
     }
 
     render(): void {

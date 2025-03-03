@@ -29,6 +29,10 @@ let lastTime = 0;
 
 function mainLoop(timestamp: number) {
     const deltaTime = (timestamp - lastTime) / 1000;
+    if (deltaTime < 1 / 60) {
+        requestAnimationFrame(mainLoop);
+        return;
+    }
     lastTime = timestamp;
     stateMachine.update(deltaTime);
 
