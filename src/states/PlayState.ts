@@ -20,8 +20,8 @@ export class PlayState implements State {
     }
 
     update(deltaTime: number) {
+        this.game.playTurn();
         this.game.update(deltaTime);
-        this.render();
     }
 
     render(): void {

@@ -1,4 +1,4 @@
-import { Card } from "../Card.js";
+import { Card, Element } from "../Card.js";
 
 export class CardRenderer {
     public cardProperties = {
@@ -35,15 +35,15 @@ export class CardRenderer {
         let symbol: string;
 
         switch (card.data.element) {
-            case "earth":
+            case Element.EARTH:
                 color = "gray";
                 symbol = "⛰";
                 break;
-            case "water":
+            case Element.WATER:
                 color = "blue";
                 symbol = "💧";
                 break;
-            case "fire":
+            case Element.FIRE:
                 color = "red";
                 symbol = "🔥";
                 break;

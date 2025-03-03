@@ -1,6 +1,11 @@
-import { PLAYER_TYPE } from "./Player.js";
+import { PLAYER_ID } from "./player/Player.js";
 
-export type Element = "fire" | "water" | "earth" | "black";
+export enum Element {
+    FIRE,
+    WATER,
+    EARTH,
+    UNDEFINED
+}
 
 export interface CardData {
     name: string;
@@ -11,9 +16,9 @@ export interface CardData {
 }
 
 export class Card {
-    constructor(public data: CardData, public owner: PLAYER_TYPE) {}
+    constructor(public data: CardData, public owner: PLAYER_ID) {}
 
     static getEmpty() {
-        return new Card({name: "NaN", element:"black", power:0, risk:0}, PLAYER_TYPE.UNDEFINED)
+        return new Card({name: "NaN", element:Element.UNDEFINED, power:0, risk:0}, PLAYER_ID.UNDEFINED)
     }
 }

@@ -2,15 +2,17 @@ import { StateMachine } from "./classes/StateMachine.js";
 import { MainMenuState } from "./states/MainMenuState.js";
 import { PlayState } from "./states/PlayState.js";
 import { Game } from "./classes/Game.js";
-import { Player } from "./classes/Player.js";
+import { PLAYER_ID } from "./classes/player/Player.js";
+import { HumanPlayer } from "./classes/player/HumanPlayer.js";
+import { BotPlayer } from "./classes/player/BotPlayer.js";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const player1 = new Player("Player 1");
-const player2 = new Player("Player 2");
+const player1 = new HumanPlayer("Player 1", PLAYER_ID.PLAYER_1);
+const player2 = new BotPlayer("Player 2", PLAYER_ID.PLAYER_2);
 const game = new Game(player1, player2);
 
 const stateMachine = new StateMachine();
@@ -36,3 +38,10 @@ function mainLoop(timestamp: number) {
 }
 
 mainLoop(0);
+
+// Handle input
+canvas.addEventListener("mousedown", (event) => stateMachine.handleInput(event));
+canvas.addEventListener("mousemove", (event) => stateMachine.handleInput(event));
+canvas.addEventListener("mouseup", (event) => stateMachine.handleInput(event));
+window.addEventListener("keydown", (event) => stateMachine.handleInput(event));
+window.addEventListener("keyup", (event) => stateMachine.handleInput(event));

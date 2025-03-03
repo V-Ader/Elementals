@@ -19,17 +19,12 @@ export class MainMenuState implements State {
         this.ctx.fillText("Click to Start", window.innerWidth / 2, 200);
 
         console.log('hello');
-
-        // Listen for clicks to start the game
-        window.onclick = () => {
-            window.onclick = null; // Avoid multiple triggers
-            this.onStart();
-        };
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {
-        if (event instanceof MouseEvent) {
+        if (event instanceof MouseEvent && event.type === "mousedown") {
             console.log("Clicked in main menu");
+            this.onStart();
         } else if (event instanceof KeyboardEvent) {
             console.log("Pressed key in main menu");
         }

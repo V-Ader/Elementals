@@ -1,6 +1,6 @@
 import { Card } from "../Card.js";
 import { Game } from "../Game.js";
-import { Player } from "../Player.js";
+import { Player } from "../player/Player.js";
 import { CardRenderer } from "./CardRenderer.js";
 
 export class Renderer {
