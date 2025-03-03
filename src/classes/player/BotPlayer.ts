@@ -1,4 +1,4 @@
-import { Card, CardData, Element } from "../Card.js";
+import { Element } from "../Card.js";
 import { Game } from "../Game.js";
 import { Player, PLAYER_ID } from "./Player.js";
 

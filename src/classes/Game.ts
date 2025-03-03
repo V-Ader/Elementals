@@ -50,9 +50,7 @@ export class Game {
     }
 
     playCard(hand_card_id: number, player_cards_id: number, player: PLAYER_ID) {
-        // is move valid
-        if (player == PLAYER_ID.PLAYER_1 && this.player1.cardsInPlay[hand_card_id].data.element === Element.UNDEFINED) return;
-        if (player == PLAYER_ID.PLAYER_2 && this.player2.cardsInPlay[hand_card_id].data.element === Element.UNDEFINED) return;
+        if (!this.isMoveLegal(hand_card_id, player_cards_id, player)) return;
         // move player card into the table
         if (player == PLAYER_ID.PLAYER_1) {
             this.player_cards[player_cards_id] = this.player1.cardsInPlay[hand_card_id];
@@ -66,6 +64,23 @@ export class Game {
         console.log("Player 1 cards on table", this.enemy_cards);
         this.moveMade = true;       
     }
+
+    isMoveLegal(hand_card_id: number, player_cards_id: number, player: PLAYER_ID) {
+        if (player == PLAYER_ID.PLAYER_1) {
+            if (this.player1.cardsInPlay[hand_card_id].data.element === Element.UNDEFINED) return false;
+            if (this.player_cards[player_cards_id].data.element !== Element.UNDEFINED) return false;
+            if (this.turn == 2 && this.enemy_cards[player_cards_id].data.element !== Element.UNDEFINED) return false;
+        }
+
+        if (player == PLAYER_ID.PLAYER_2) {
+            if (this.player2.cardsInPlay[hand_card_id].data.element === Element.UNDEFINED) return false;
+            if (this.enemy_cards[player_cards_id].data.element !== Element.UNDEFINED) return false;
+            if (this.turn == 2 && this.player_cards[player_cards_id].data.element !== Element.UNDEFINED) return false;
+        }
+
+        return true;
+    }
+
 
     isTurnOver() {
         for (let i = 0; i < this.player_cards.length; i++) {
