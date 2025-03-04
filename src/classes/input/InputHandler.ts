@@ -1,4 +1,4 @@
-import { Card } from "../Card.js";
+import { Card, Element } from "../card/Card.js";
 import { Game } from "../Game.js";
 import { PLAYER_ID } from "../player/Player.js";
 import { GameRenderer } from "../renderer/GameRenderer.js";
@@ -34,12 +34,33 @@ export class InputController {
     }
 
     private handleMouseDown(event: MouseEvent) {
+        // handle card from hand selection
         for(let i = 0; i < this.game.player1.cardsInPlay.length; i++) {
             const cardPosition = this.renderer.getPlayerHandCardPosition(i);
             if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.width, cardPosition.height)) {
                 this.game.userPointer.card = this.game.player1.cardsInPlay[i];
                 this.game.userPointer.last_take_position = i;
                 break;
+            }
+        }
+
+        // handle card from table selection
+        for (let i = 0; i < this.game.player_cards.length; i++) {
+            if (this.game.player_cards[i].data.element == Element.UNDEFINED) continue;
+
+            const cardPosition = this.renderer.getPlayerCardPosition(i);
+            if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.width, cardPosition.height)) {
+                console.log("table card clicked", i);
+
+                // if ability clicked
+                const button = this.renderer.cardRenderer.getAbilityButtonPosition(cardPosition);
+                if (this.game.player_cards[i].data.ability) {
+                    if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, button.x, button.y, button.width, button.height)) {
+                        console.log("ability clicked");
+                        this.game.player_cards[i].data.ability?.execute(this.game);
+                        break;
+                    }
+                }
             }
         }
     }

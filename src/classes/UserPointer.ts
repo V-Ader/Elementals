@@ -1,4 +1,4 @@
-import { Card } from "./Card.js";
+import { Card } from "./card/Card.js";
 
 export class UserPointer {
     public last_take_position = 0;

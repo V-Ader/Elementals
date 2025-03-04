@@ -1,12 +1,11 @@
 import { Game } from "../Game.js";
 import { CardRenderer } from "./CardRenderer.js";
-import { Card } from "../Card.js";
 import { UserPointerRenderer } from "./UserPointerRenderer.js";
 import { InputController } from "../input/InputHandler.js";
 import { HealthRenderer } from "./HealthRenderer.js";
 
 export class GameRenderer {
-    private cardRenderer: CardRenderer;
+    public cardRenderer: CardRenderer;
     private healthRenderer: HealthRenderer;
 
     private userPointerRenderer: UserPointerRenderer;

@@ -1,4 +1,4 @@
-import { Card, Element } from "../Card.js";
+import { Card, Element } from "../card/Card.js";
 
 export class CardRenderer {
     public cardProperties = {
@@ -18,6 +18,13 @@ export class CardRenderer {
 
         // Draw card risk
         this.drawCardRisk(card, x, y, width, height);
+
+        // Draw card ability button
+        this.renderAbilityButton(card, {x: x + 10, y: y + height - 40});
+    }
+
+    renderCenered(card: Card, {x, y}: {x: number, y: number}, width = this.cardProperties.width, height = this.cardProperties.height) { // 👈 hand control indicator only: todo create separated renderer
+        this.render(card, {x: x - width / 2, y: y - height / 2}, width, height);
     }
 
     private drawCardBackground(x: number, y: number, width: number, height: number) {
@@ -85,4 +92,26 @@ export class CardRenderer {
         this.ctx.fillText(card.data.risk.toString(), x + width / 2, y + height - 20);
     }
 
+    renderAbilityButton(card: Card, {x, y}: {x: number, y: number}, width = 50, height = 30) {
+        if (!card.data.ability) {
+            return;
+        }
+        // Draw button background
+        this.ctx.fillStyle = "lightgray";
+        this.ctx.strokeStyle = "black";
+        this.ctx.lineWidth = 1;
+        this.ctx.fillRect(x, y, width, height);
+        this.ctx.strokeRect(x, y, width, height);
+    
+        // Draw button text
+        this.ctx.fillStyle = "black";
+        this.ctx.font = "16px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(card.data.ability?.name, x + width / 2, y + height / 2);
+    }
+
+    getAbilityButtonPosition(cardarea: { x: number, y: number, width: number, height: number} ) {
+        return {x: cardarea.x + 10, y: cardarea.y + this.cardProperties.height - 40, width: 50, height: 30};
+    }
 }

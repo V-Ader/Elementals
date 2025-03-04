@@ -1,11 +1,11 @@
-import { Card, Element, ElementMatrix} from "./Card.js";
+import { Card, Element, ElementMatrix} from "./card/Card.js";
 import { UserPointer } from "./UserPointer.js";
 import { Player, PLAYER_ID } from "./player/Player.js";
 
 export class Game {
     public BOARD_CARD_SLOT_COUNT = 3;
     public player_cards: Card[] = [Card.getEmpty(), Card.getEmpty(), Card.getEmpty()];
-    public player_cards_slot_risk: number[] = [0, 0, 0];
+    public player_cards_slot_risk: number[] = [10, 10, 10];
     public enemy_cards: Card[] = [Card.getEmpty(), Card.getEmpty(), Card.getEmpty()];
     public enemy_cards_slot_risk: number[] = [0, 0, 0];
 
@@ -33,11 +33,9 @@ export class Game {
 
     playTurn() {
         if (!this.moveMade && this.currentPlayer === PLAYER_ID.PLAYER_1) {
-            console.log(this.currentPlayer);
             this.player1.makeMove(this);
         }
         if (!this.moveMade && this.currentPlayer === PLAYER_ID.PLAYER_2) {
-            console.log(this.currentPlayer);
             this.player2.makeMove(this);
         }
 
@@ -54,9 +52,15 @@ export class Game {
         // move player card into the table
         if (player == PLAYER_ID.PLAYER_1) {
             this.player_cards[player_cards_id] = this.player1.cardsInPlay[hand_card_id];
+            if (this.player_cards[player_cards_id].data.ability) {
+                this.player_cards[player_cards_id].data.ability.isActive = true;
+            }
             this.player1.cardsInPlay[hand_card_id] = Card.getEmpty();
         } else if (player == PLAYER_ID.PLAYER_2) {
             this.enemy_cards[player_cards_id] = this.player2.cardsInPlay[hand_card_id];
+            if (this.enemy_cards[player_cards_id].data.ability) {
+                this.enemy_cards[player_cards_id].data.ability.isActive = true;
+            }
             this.player2.cardsInPlay[hand_card_id] = Card.getEmpty();
         }
         console.log("Player", player, "play card", hand_card_id, "to", player_cards_id);
