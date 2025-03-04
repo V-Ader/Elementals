@@ -37,4 +37,8 @@ export class Card {
     static getEmpty() {
         return new Card({name: "NaN", element:Element.UNDEFINED, risk: 0}, PLAYER_ID.UNDEFINED)
     }
+
+    isEmpty(): boolean {
+        return this.data.element === Element.UNDEFINED;
+    }
 }

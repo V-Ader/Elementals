@@ -52,8 +52,9 @@ export class Player {
     }
 
     getNewHand() {
-        this.cardsInPlay = [];
         for (let i = 0; i < 4; i++) {
+            if (this.cardsInPlay[i].data.element !== Element.UNDEFINED) continue;
+            
             const randomIndex = Math.floor(Math.random() * (this.deck.length - i));
             const cardData = this.deck.splice(randomIndex, 1)[0];
             this.cardsInPlay.push(new Card(cardData, this.player_id));
