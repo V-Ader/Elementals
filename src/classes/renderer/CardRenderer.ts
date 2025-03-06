@@ -3,11 +3,16 @@ import { ResourceManager } from "./ResourceManager.js";
 
 export class CardRenderer {
     public cardProperties = {
-        width: 100,
-        height: 150,
+        get width() {
+            return window.innerWidth * 0.075;
+        },
+        get height() {
+            return window.innerWidth * 0.075 * 1.5;
+        },
         cornerRadius: 10,
+        maring: 10,
 
-        icon : {
+        icon: {
             size: 20,
             padding: 5
         },
@@ -18,12 +23,16 @@ export class CardRenderer {
         },
 
         actionButton: {
-            width: 100,
-            height: 30,
-            cornerRadius: 5
+            get width() {
+                return window.innerWidth * 0.075;
+            },            
+            get height() {
+                return window.innerWidth * 0.075 * 1.5 * 0.2;
+            },
+            cornerRadius: 10
         }
     };
-
+    
     constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {}
 
     render(card: Card, {x, y}: {x: number, y: number}, width = this.cardProperties.width, height = this.cardProperties.height) {
@@ -37,7 +46,7 @@ export class CardRenderer {
         this.drawCardRisk(card, x, y, width, height);
 
         // Draw card ability button
-        this.renderAbilityButton(card, {x: x, y: y + height - 30});
+        this.renderAbilityButton(card, {x: x, y: y + height - this.cardProperties.actionButton.height});
     }
 
     renderCenered(card: Card, {x, y}: {x: number, y: number}, width = this.cardProperties.width, height = this.cardProperties.height) {
@@ -139,13 +148,12 @@ export class CardRenderer {
             return;
         }
 
-        const cornerRadius = 5;
         const image = this.resourceManager.getMaterialImage('pergamin');
 
         // Draw button background
         if (image) {
             this.ctx.save();
-            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, cornerRadius);
+            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, this.cardProperties.actionButton.cornerRadius);
             this.ctx.clip();
             this.ctx.drawImage(image, x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height);
             this.ctx.restore();
@@ -153,7 +161,7 @@ export class CardRenderer {
             this.ctx.fillStyle = "lightgray";
             this.ctx.strokeStyle = "black";
             this.ctx.lineWidth = 1;
-            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, cornerRadius);
+            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, this.cardProperties.actionButton.cornerRadius);
             this.ctx.fill();
             this.ctx.stroke();
         }
@@ -167,6 +175,6 @@ export class CardRenderer {
     }
 
     getAbilityButtonPosition(cardarea: { x: number, y: number, width: number, height: number} ) {
-        return {x: cardarea.x, y: cardarea.y + this.cardProperties.height - 30, width: this.cardProperties.actionButton.width, height: this.cardProperties.actionButton.height};
+        return {x: cardarea.x, y: cardarea.y + cardarea.height - this.cardProperties.actionButton.height, width: this.cardProperties.actionButton.width, height: this.cardProperties.actionButton.height};
     }
 }

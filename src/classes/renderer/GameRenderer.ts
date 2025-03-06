@@ -16,6 +16,9 @@ export class GameRenderer {
         this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
         this.healthRenderer = new HealthRenderer(ctx);
+
+         window.addEventListener('resize', this.onResize.bind(this));
+         this.onResize();
     }
 
     render(game: Game, inputController: InputController) { 
@@ -37,6 +40,11 @@ export class GameRenderer {
         this.userPointerRenderer.render(game.userPointer, inputController);
     }
 
+    private onResize() {
+        this.ctx.canvas.width = window.innerWidth;
+        this.ctx.canvas.height = window.innerHeight;
+    }
+
     private renderOpponentCards(game: Game) {
         for (let i = 0; i < game.enemy_cards.length; i++) {
             this.cardRenderer.render(game.enemy_cards[i], this.getOpponentCardPosition(i));
@@ -45,22 +53,24 @@ export class GameRenderer {
     }
 
     public getOpponentCardPosition(cardNumber: number) {
-        const x = 200 + cardNumber * 120;
+        const totalWidth = 3 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);
         const y = 100;
-        return { x, y, width: 100, height: 150 };
+        return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
     }
 
     private renderPlayerCards(game: Game) {
         for (let i = 0; i < game.player_cards.length; i++) {
             this.cardRenderer.render(game.player_cards[i], this.getPlayerCardPosition(i));
-            this.renderSlotRisk(game.player_cards_slot_risk[i], this.getPlayerCardPosition(i).x, this.getPlayerCardPosition(i).y + 170);
+            this.renderSlotRisk(game.player_cards_slot_risk[i], this.getPlayerCardPosition(i).x, this.getPlayerCardPosition(i).y + this.cardRenderer.cardProperties.height + 20);
         }    
     }
 
     public getPlayerCardPosition(cardNumber: number) {
-        const x = 200 + cardNumber * 120;
+        const totalWidth = 3 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);
         const y = this.ctx.canvas.height / 2 - 100;
-        return { x, y, width: 100, height: 150 };
+        return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
     }
 
     private renderPlayerHandCards(game: Game) {
@@ -70,9 +80,10 @@ export class GameRenderer {
     }
 
     public getPlayerHandCardPosition(cardNumber: number) {
-        const x = 100 + cardNumber * 120;
-        const y = this.ctx.canvas.height - 200;
-        return { x, y, width: 100, height: 150 };
+        const totalWidth = 4 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);        
+        const y = this.ctx.canvas.height - (this.cardRenderer.cardProperties.height + this.cardRenderer.cardProperties.maring * 2);
+        return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
     }
 
     private renderPlayersHealth(game: Game) {
@@ -84,6 +95,6 @@ export class GameRenderer {
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
-        this.ctx.fillText(risk.toString(), x + 50, y);
+        this.ctx.fillText(risk.toString(), x + this.cardRenderer.cardProperties.width / 2, y);
     }
 }
