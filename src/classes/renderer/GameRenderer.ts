@@ -3,15 +3,17 @@ import { CardRenderer } from "./CardRenderer.js";
 import { UserPointerRenderer } from "./UserPointerRenderer.js";
 import { InputController } from "../input/InputHandler.js";
 import { HealthRenderer } from "./HealthRenderer.js";
+import { ResourceManager } from "./ResourceManager.js";
 
 export class GameRenderer {
     public cardRenderer: CardRenderer;
     private healthRenderer: HealthRenderer;
-
     private userPointerRenderer: UserPointerRenderer;
+    private resourceManager: ResourceManager;
 
     constructor(private ctx: CanvasRenderingContext2D) {
-        this.cardRenderer = new CardRenderer(ctx);
+        this.resourceManager = new ResourceManager();
+        this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
         this.healthRenderer = new HealthRenderer(ctx);
     }

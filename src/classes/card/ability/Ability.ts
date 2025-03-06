@@ -19,4 +19,8 @@ export class Ability {
     isCardOpponents(game: Game): boolean {
             return game.enemy_cards.find(card => card.id === this.corelated_card_id) !== undefined;
     }
+
+    isEmpty(): boolean {
+        return this.name === 'undefined name';
+    }
 }

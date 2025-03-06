@@ -27,15 +27,15 @@ export class Card {
 
     constructor(public data: CardData, public owner: PLAYER_ID) {
         this.id = this.generateId();
-        this.data.ability?.corelateWithCardById(this.id);
+        if (this.data.ability) this.data.ability.corelateWithCardById(this.id);
     }
 
     generateId(): string {
-        return this.data.name + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 
     static getEmpty() {
-        return new Card({name: "NaN", element:Element.UNDEFINED, risk: 0}, PLAYER_ID.UNDEFINED)
+        return new Card({name: "NaN", element:Element.UNDEFINED, risk: 0 }, PLAYER_ID.UNDEFINED)
     }
 
     isEmpty(): boolean {
