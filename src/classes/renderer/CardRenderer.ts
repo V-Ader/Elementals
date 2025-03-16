@@ -3,11 +3,17 @@ import { ResourceManager } from "./ResourceManager.js";
 
 export class CardRenderer {
     public cardProperties = {
-        width: 100,
-        height: 150,
+        get width(): number {
+            const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
+            return smallerDimension * 0.15; // 10% of the smaller dimension
+        },
+        get height() {
+            return this.width * 1.5; // Maintain 2:3 aspect ratio
+        },
         cornerRadius: 10,
+        maring: 10,
 
-        icon : {
+        icon: {
             size: 20,
             padding: 5
         },
@@ -18,15 +24,20 @@ export class CardRenderer {
         },
 
         actionButton: {
-            width: 100,
-            height: 30,
-            cornerRadius: 5
+            get width(): number {
+                const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
+                return smallerDimension * 0.15;
+            },
+            get height() {
+                return this.width * 0.2; // 20% of the card width
+            },
+            cornerRadius: 10
         }
     };
 
     constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {}
 
-    render(card: Card, {x, y}: {x: number, y: number}, width = this.cardProperties.width, height = this.cardProperties.height) {
+    render(card: Card, { x, y }: { x: number, y: number }, width = this.cardProperties.width, height = this.cardProperties.height) {
         // Draw card background
         this.drawCardBackground(card, x, y, width, height);
 
@@ -37,11 +48,11 @@ export class CardRenderer {
         this.drawCardRisk(card, x, y, width, height);
 
         // Draw card ability button
-        this.renderAbilityButton(card, {x: x, y: y + height - 30});
+        this.renderAbilityButton(card, { x: x, y: y + height - this.cardProperties.actionButton.height });
     }
 
-    renderCenered(card: Card, {x, y}: {x: number, y: number}, width = this.cardProperties.width, height = this.cardProperties.height) {
-        this.render(card, {x: x - width / 2, y: y - height / 2}, width, height);
+    renderCenered(card: Card, { x, y }: { x: number, y: number }, width = this.cardProperties.width, height = this.cardProperties.height) {
+        this.render(card, { x: x - width / 2, y: y - height / 2 }, width, height);
     }
 
     private drawCardBackground(card: Card, x: number, y: number, width: number, height: number) {
@@ -134,18 +145,17 @@ export class CardRenderer {
         this.ctx.fillText(card.data.risk.toString(), circleX, circleY);
     }
 
-    renderAbilityButton(card: Card, {x, y}: {x: number, y: number}) {
+    renderAbilityButton(card: Card, { x, y }: { x: number, y: number }) {
         if (!card.data.ability) {
             return;
         }
 
-        const cornerRadius = 5;
         const image = this.resourceManager.getMaterialImage('pergamin');
 
         // Draw button background
         if (image) {
             this.ctx.save();
-            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, cornerRadius);
+            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, this.cardProperties.actionButton.cornerRadius);
             this.ctx.clip();
             this.ctx.drawImage(image, x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height);
             this.ctx.restore();
@@ -153,7 +163,7 @@ export class CardRenderer {
             this.ctx.fillStyle = "lightgray";
             this.ctx.strokeStyle = "black";
             this.ctx.lineWidth = 1;
-            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, cornerRadius);
+            this.drawRoundedRect(x, y, this.cardProperties.actionButton.width, this.cardProperties.actionButton.height, this.cardProperties.actionButton.cornerRadius);
             this.ctx.fill();
             this.ctx.stroke();
         }
@@ -166,7 +176,7 @@ export class CardRenderer {
         this.ctx.fillText(card.data.ability?.name, x + this.cardProperties.actionButton.width / 2, y + this.cardProperties.actionButton.height / 2);
     }
 
-    getAbilityButtonPosition(cardarea: { x: number, y: number, width: number, height: number} ) {
-        return {x: cardarea.x, y: cardarea.y + this.cardProperties.height - 30, width: this.cardProperties.actionButton.width, height: this.cardProperties.actionButton.height};
+    getAbilityButtonPosition(cardarea: { x: number, y: number, width: number, height: number }) {
+        return { x: cardarea.x, y: cardarea.y + cardarea.height - this.cardProperties.actionButton.height, width: this.cardProperties.actionButton.width, height: this.cardProperties.actionButton.height };
     }
 }
