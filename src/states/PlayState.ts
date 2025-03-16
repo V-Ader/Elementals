@@ -1,4 +1,4 @@
-import { Game } from "../classes/Game.js";
+import { Game } from "../classes/game/Game.js";
 import { InputController } from "../classes/input/InputHandler.js";
 import { GameRenderer } from "../classes/renderer/GameRenderer.js";
 import { State } from "../classes/StateMachine.js";
@@ -6,7 +6,7 @@ import { State } from "../classes/StateMachine.js";
 export class PlayState implements State {
     private inputController: InputController;
 
-    private waitForNewTurn = false;
+    private waitForNewRound = false;
 
     constructor(
         private ctx: CanvasRenderingContext2D,
@@ -22,7 +22,7 @@ export class PlayState implements State {
     }
 
     update(deltaTime: number) {
-        if (this.waitForNewTurn) {
+        if (this.waitForNewRound) {
             return;
         }
         this.game.playTurn();
@@ -30,26 +30,28 @@ export class PlayState implements State {
 
         if (this.game.isGameOver()) {
             console.log("Game Over");
-            this.waitForNewTurn = true;
+            this.waitForNewRound = true;
             
             // sleep for 1 second
             setTimeout(() => {
                 this.game.startNewGame(); 
-                this.waitForNewTurn = false;
+                this.waitForNewRound = false;
             }, 1000);
+            return;
         }
 
-        if (this.game.isTurnOver()) {
-            this.waitForNewTurn = true;
+        if (this.game.isRoundOver()) {
+            this.waitForNewRound = true;
 
-            console.log("Turn Over");
+            console.log("Round Over");
             this.game.resolveTheBoard();
 
             // sleep for 1 second
             setTimeout(() => {
-                this.game.startNewTurn(); 
-                this.waitForNewTurn = false;
+                this.game.startNewRound(); 
+                this.waitForNewRound = false;
             }, 1000);
+            return;
         }
     }
 

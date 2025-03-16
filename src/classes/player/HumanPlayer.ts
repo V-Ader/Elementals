@@ -1,5 +1,5 @@
 import { Card } from "../card/Card.js";
-import { Game } from "../Game.js";
+import { Game } from "../game/Game.js";
 import { Player, PLAYER_ID } from "./Player.js";
 
 

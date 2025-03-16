@@ -1,4 +1,4 @@
-import { Game } from "../../Game";
+import { Game } from "../../game/Game.js";
 import { Ability } from "./Ability.js";
 
 export class ReduceRisk extends Ability {
@@ -8,7 +8,7 @@ export class ReduceRisk extends Ability {
 
     execute(game: Game): void {        
         if (this.isActive) {
-            game.player_cards.map(card => {
+            game.players.player_1.cards.map(card => {
                 card.data.risk = Math.floor(card.data.risk / 2);
                 return card;
             });

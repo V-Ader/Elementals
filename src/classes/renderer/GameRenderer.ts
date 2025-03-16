@@ -1,9 +1,11 @@
-import { Game } from "../Game.js";
+import { Game } from "../game/Game.js";
 import { CardRenderer } from "./CardRenderer.js";
 import { UserPointerRenderer } from "./UserPointerRenderer.js";
 import { InputController } from "../input/InputHandler.js";
 import { HealthRenderer } from "./HealthRenderer.js";
 import { ResourceManager } from "./ResourceManager.js";
+import { getScale } from "./Utlis.js";
+import { PLAYER_ID } from "../player/Player.js";
 
 export class GameRenderer {
     public cardRenderer: CardRenderer;
@@ -16,9 +18,6 @@ export class GameRenderer {
         this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
         this.healthRenderer = new HealthRenderer(ctx);
-
-         window.addEventListener('resize', this.onResize.bind(this));
-         this.onResize();
     }
 
     render(game: Game, inputController: InputController) { 
@@ -40,42 +39,37 @@ export class GameRenderer {
         this.userPointerRenderer.render(game.userPointer, inputController);
     }
 
-    private onResize() {
-        this.ctx.canvas.width = window.innerWidth;
-        this.ctx.canvas.height = window.innerHeight;
-    }
-
     private renderOpponentCards(game: Game) {
-        for (let i = 0; i < game.enemy_cards.length; i++) {
-            this.cardRenderer.render(game.enemy_cards[i], this.getOpponentCardPosition(i));
-            this.renderSlotRisk(game.enemy_cards_slot_risk[i], this.getOpponentCardPosition(i).x, this.getOpponentCardPosition(i).y - 20);
+        for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_2).cards.length; i++) {
+            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_2).cards[i], this.getOpponentCardPosition(i));
+            this.renderSlotRisk(game.players.get(PLAYER_ID.PLAYER_2).cards_risks[i], this.getOpponentCardPosition(i).x, this.getOpponentCardPosition(i).y - 20 * getScale());
         } 
     }
 
     public getOpponentCardPosition(cardNumber: number) {
         const totalWidth = 3 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
         const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);
-        const y = 100;
+        const y = 100 * getScale();
         return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
     }
 
     private renderPlayerCards(game: Game) {
-        for (let i = 0; i < game.player_cards.length; i++) {
-            this.cardRenderer.render(game.player_cards[i], this.getPlayerCardPosition(i));
-            this.renderSlotRisk(game.player_cards_slot_risk[i], this.getPlayerCardPosition(i).x, this.getPlayerCardPosition(i).y + this.cardRenderer.cardProperties.height + 20);
+        for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_1).cards.length; i++) {
+            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).cards[i], this.getPlayerCardPosition(i));
+            this.renderSlotRisk(game.players.get(PLAYER_ID.PLAYER_1).cards_risks[i], this.getPlayerCardPosition(i).x, this.getPlayerCardPosition(i).y + this.cardRenderer.cardProperties.height + 20);
         }    
     }
 
     public getPlayerCardPosition(cardNumber: number) {
         const totalWidth = 3 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
         const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);
-        const y = this.ctx.canvas.height / 2 - 100;
+        const y = this.ctx.canvas.height / 2 - 100 * getScale();
         return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
     }
 
     private renderPlayerHandCards(game: Game) {
-        for (let i = 0; i < game.player1.cardsInPlay.length; i++) {
-            this.cardRenderer.render(game.player1.cardsInPlay[i], this.getPlayerHandCardPosition(i));
+        for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay.length; i++) {
+            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i], this.getPlayerHandCardPosition(i));
         }
     }
 
@@ -87,7 +81,7 @@ export class GameRenderer {
     }
 
     private renderPlayersHealth(game: Game) {
-        this.healthRenderer.render(game.player1.health, game.player2.health);
+        this.healthRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.health, game.players.get(PLAYER_ID.PLAYER_1).player.health);
     }
 
     private renderSlotRisk(risk: number, x: number, y: number) {

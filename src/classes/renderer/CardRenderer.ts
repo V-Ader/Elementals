@@ -1,37 +1,36 @@
 import { Card, Element } from "../card/Card.js";
 import { ResourceManager } from "./ResourceManager.js";
+import { getScale } from "./Utlis.js";
 
 export class CardRenderer {
     public cardProperties = {
         get width(): number {
-            const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
-            return smallerDimension * 0.15; // 10% of the smaller dimension
+            return 180 * getScale();
         },
         get height() {
-            return this.width * 1.5; // Maintain 2:3 aspect ratio
+            return 270 * getScale();
         },
-        cornerRadius: 10,
-        maring: 10,
+        cornerRadius: 20 * getScale(),
+        maring: 20 * getScale(),
 
         icon: {
-            size: 20,
-            padding: 5
+            size: 40 * getScale(),
+            padding: 10 * getScale()
         },
 
         elementIndicator: {
-            circleRadius: 15,
-            padding: 5
+            circleRadius: 30 * getScale(),
+            padding: 10 * getScale()
         },
 
         actionButton: {
             get width(): number {
-                const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
-                return smallerDimension * 0.15;
+                return 180 * getScale();
             },
             get height() {
-                return this.width * 0.2; // 20% of the card width
+                return 40 * getScale();
             },
-            cornerRadius: 10
+            cornerRadius: 20 * getScale()
         }
     };
 
@@ -139,7 +138,7 @@ export class CardRenderer {
 
         // Draw white text
         this.ctx.fillStyle = "white";
-        this.ctx.font = "20px Arial";
+        this.ctx.font = `${20 * getScale()}px Arial`;
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
         this.ctx.fillText(card.data.risk.toString(), circleX, circleY);
@@ -170,7 +169,7 @@ export class CardRenderer {
 
         // Draw button text
         this.ctx.fillStyle = "black";
-        this.ctx.font = "16px Arial";
+        this.ctx.font = `${16 * getScale()}px Arial`;
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
         this.ctx.fillText(card.data.ability?.name, x + this.cardProperties.actionButton.width / 2, y + this.cardProperties.actionButton.height / 2);

@@ -1,15 +1,35 @@
 import { StateMachine } from "./classes/StateMachine.js";
 import { MainMenuState } from "./states/MainMenuState.js";
 import { PlayState } from "./states/PlayState.js";
-import { Game } from "./classes/Game.js";
+import { Game } from "./classes/game/Game.js";
 import { PLAYER_ID } from "./classes/player/Player.js";
 import { HumanPlayer } from "./classes/player/HumanPlayer.js";
 import { BotPlayer } from "./classes/player/BotPlayer.js";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+
+function resizeCanvas() {
+    const aspectRatio = 16 / 9;
+    const windowAspectRatio = window.innerWidth / window.innerHeight;
+
+    if (windowAspectRatio > aspectRatio) {
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerHeight * aspectRatio;
+    } else {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerWidth / aspectRatio;
+    }
+
+    canvas.style.width = `${canvas.width}px`;
+    canvas.style.height = `${canvas.height}px`;
+}
+
+// Initial resize
+resizeCanvas();
+
+// Resize canvas on window resize
+window.addEventListener("resize", resizeCanvas);
 
 const player1 = new HumanPlayer("Player 1", PLAYER_ID.PLAYER_1);
 const player2 = new BotPlayer("Player 2", PLAYER_ID.PLAYER_2);

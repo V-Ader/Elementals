@@ -1,4 +1,4 @@
-import { Game } from "../../Game";
+import { Game } from "../../game/Game.js";
 
 export class Ability {
     name: string = 'undefined name'; 
@@ -13,11 +13,11 @@ export class Ability {
     };
 
     isCardPlayers(game: Game): boolean {
-        return game.player_cards.find(card => card.id === this.corelated_card_id) !== undefined;
+        return game.players.player_1.cards.find(card => card.id === this.corelated_card_id) !== undefined;
     }
 
     isCardOpponents(game: Game): boolean {
-            return game.enemy_cards.find(card => card.id === this.corelated_card_id) !== undefined;
+            return game.players.player_2.cards.find(card => card.id === this.corelated_card_id) !== undefined;
     }
 
     isEmpty(): boolean {
