@@ -25,32 +25,28 @@ export class PlayState implements State {
         if (this.waitForNewRound) {
             return;
         }
-        this.game.playTurn();
-        this.game.update(deltaTime);
-
-        if (this.game.isGameOver()) {
-            console.log("Game Over");
-            this.waitForNewRound = true;
-            
-            // sleep for 1 second
-            setTimeout(() => {
-                this.game.startNewGame(); 
-                this.waitForNewRound = false;
-            }, 1000);
-            return;
-        }
+        this.game.playTurn(); // handle players' movements
+        this.game.update(deltaTime); // update game based on the time and movements
 
         if (this.game.isRoundOver()) {
             this.waitForNewRound = true;
 
             console.log("Round Over");
-            this.game.resolveTheBoard();
+            for (let i = 0; i < 3; i++) {
+                this.game.resolveCardPair(i);
 
-            // sleep for 1 second
-            setTimeout(() => {
-                this.game.startNewRound(); 
-                this.waitForNewRound = false;
-            }, 1000);
+                if (this.game.isGameOver()) {
+                    console.log("Game Over");                        
+                    // sleep for 2 seconds
+                    this.game.startNewGame(); 
+                    this.waitForNewRound = false;
+                    return;
+                }
+
+            }
+
+            this.game.startNewRound();
+            this.waitForNewRound = false;
             return;
         }
     }

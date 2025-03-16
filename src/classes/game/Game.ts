@@ -65,6 +65,19 @@ export class Game {
         this.moveMade = true;       
     }
 
+
+    retriveCard(card: Card, player: PLAYER_ID) {
+        const gamePlayer = this.players.get(player);
+        if (!gamePlayer) return;
+
+        for (let i = 0; i < gamePlayer.player.cardsInPlay.length; i++) {
+            if (gamePlayer.player.cardsInPlay[i].data.element === Element.UNDEFINED) {
+                gamePlayer.player.cardsInPlay[i] = card;
+                break;
+            }
+        }
+    }
+
     isMoveLegal(hand_card_id: number, player_cards_id: number, player: PLAYER_ID) {
         const gamePlayer = this.players.get(player);
         if (!gamePlayer) return false;
@@ -89,36 +102,39 @@ export class Game {
         return  this.players.get(PLAYER_ID.PLAYER_1).isReadyToEndGame() || this.players.get(PLAYER_ID.PLAYER_2).isReadyToEndGame();
     }
 
-    resolveTheBoard() {
+    resolveCardPair(index: number) {
         const player1GamePlayer = this.players.get(PLAYER_ID.PLAYER_1);
         const player2GamePlayer = this.players.get(PLAYER_ID.PLAYER_2);
         if (!player1GamePlayer || !player2GamePlayer) return;
 
-        for (let i = 0; i < this.BOARD_CARD_SLOT_COUNT; i++) {
-            const player_card = player1GamePlayer.cards[i];
-            const enemy_card = player2GamePlayer.cards[i];
-            const result = ElementMatrix[player_card.data.element][enemy_card.data.element];
-            if (result === 1) {
-                this.players.get(PLAYER_ID.PLAYER_1).player.health -= player_card.data.risk + player1GamePlayer.cards_risks[i];
-                player1GamePlayer.cards_risks[i] = 0;
-                player2GamePlayer.cards_risks[i] = 0;
-            } else if (result === -1) {
-                this.players.get(PLAYER_ID.PLAYER_2).player.health -= enemy_card.data.risk + player2GamePlayer.cards_risks[i];
-                player1GamePlayer.cards_risks[i] = 0;
-                player2GamePlayer.cards_risks[i] = 0;
-            } else {
-                player1GamePlayer.cards_risks[i] += player_card.data.risk;
-                player2GamePlayer.cards_risks[i] += enemy_card.data.risk;
-            }
-
-            if ( this.players.get(PLAYER_ID.PLAYER_1).player.health <= 0) {
-                console.log("Player 2 wins");
-                return;
-            } else if (this.players.get(PLAYER_ID.PLAYER_2).player.health <= 0) {
-                console.log("Player 1 wins");
-                return;
-            }
+        const player_card = player1GamePlayer.cards[index];
+        const enemy_card = player2GamePlayer.cards[index];
+        const result = ElementMatrix[player_card.data.element][enemy_card.data.element];
+        if (result === 1) {
+            this.players.get(PLAYER_ID.PLAYER_1).player.health -= player_card.data.risk + player1GamePlayer.cards_risks[index];
+            player1GamePlayer.cards_risks[index] = 0;
+            player2GamePlayer.cards_risks[index] = 0;
+            this.retriveCard(enemy_card, PLAYER_ID.PLAYER_2);
+        } else if (result === -1) {
+            this.players.get(PLAYER_ID.PLAYER_2).player.health -= enemy_card.data.risk + player2GamePlayer.cards_risks[index];
+            player1GamePlayer.cards_risks[index] = 0;
+            player2GamePlayer.cards_risks[index] = 0;
+            this.retriveCard(player_card, PLAYER_ID.PLAYER_1);
+        } else {
+            player1GamePlayer.cards_risks[index] += player_card.data.risk;
+            player2GamePlayer.cards_risks[index] += enemy_card.data.risk;
         }
+
+        if (this.players.get(PLAYER_ID.PLAYER_1).player.health <= 0) {
+            console.log("Player 2 wins");
+            return;
+        } else if (this.players.get(PLAYER_ID.PLAYER_2).player.health <= 0) {
+            console.log("Player 1 wins");
+            return;
+        }
+
+        player1GamePlayer.cards[index] = Card.getEmpty();
+        player2GamePlayer.cards[index] = Card.getEmpty();
     }
 
     startNewRound() {
@@ -132,5 +148,7 @@ export class Game {
         this.turn = 1;
         this.currentPlayer = PLAYER_ID.PLAYER_1;
         this.initializeGame();
+
+        this.startNewRound();
     }
 }
