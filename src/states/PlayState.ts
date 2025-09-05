@@ -32,7 +32,7 @@ export class PlayState implements State {
             this.waitForNewRound = true;
 
             console.log("Round Over");
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < this.game.BOARD_CARD_SLOT_COUNT; i++) {
                 this.game.resolveCardPair(i);
 
                 if (this.game.isGameOver()) {

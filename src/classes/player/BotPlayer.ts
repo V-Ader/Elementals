@@ -15,10 +15,14 @@ export class BotPlayer extends Player {
                     if (game.players.player_2.cards[j].data.element === Element.UNDEFINED) {
                         game.playCard(i, j, this.player_id);
                         console.log("Bot played card", this.cardsInPlay[i]);
+                        game.endTurn();
                         return;
                     }
                 }
             }
         }
+
+        // finish turn if no move is possible
+        
     }
 }

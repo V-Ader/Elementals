@@ -9,7 +9,8 @@ export class Game {
     public turn: number = 1;
     public currentPlayer: PLAYER_ID = PLAYER_ID.PLAYER_1;
 
-    public moveMade: boolean = false;
+    public cardPlayed: boolean = false;
+    public abilityPlayed: boolean = false;
 
     public userPointer = new UserPointer();
 
@@ -34,19 +35,24 @@ export class Game {
         
     }
 
+    isMoveMade(){
+        return this.cardPlayed && this.abilityPlayed;
+    }
+
     playTurn() {
-        if (!this.moveMade && this.currentPlayer === PLAYER_ID.PLAYER_1) {
+        if (!this.isMoveMade() && this.currentPlayer === PLAYER_ID.PLAYER_1) {
             this.players.get(PLAYER_ID.PLAYER_1)?.player.makeMove(this);
         }
-        if (!this.moveMade && this.currentPlayer === PLAYER_ID.PLAYER_2) {
+        if (!this.isMoveMade() && this.currentPlayer === PLAYER_ID.PLAYER_2) {
             this.players.get(PLAYER_ID.PLAYER_2)?.player.makeMove(this);
         }
 
-        if (this.moveMade) {
+        if (this.isMoveMade()) {
             this.turn++;
             this.currentPlayer = this.turn % 2 == 0 ? PLAYER_ID.PLAYER_2 : PLAYER_ID.PLAYER_1;
             console.log(`Turn ${this.turn}: Player ${this.turn % 2 + 1}'s move.`); 
-            this.moveMade = false;       
+            this.cardPlayed = false; 
+            this.abilityPlayed = false;      
         }
     }
 
@@ -62,7 +68,12 @@ export class Game {
         }
         gamePlayer.player.cardsInPlay[hand_card_id] = Card.getEmpty();
 
-        this.moveMade = true;       
+        this.cardPlayed = true;       
+    }
+
+    endTurn(){
+        this.cardPlayed = true; 
+        this.abilityPlayed = true;      
     }
 
 

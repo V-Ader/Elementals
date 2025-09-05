@@ -9,12 +9,29 @@ export class InputController {
         y: 0    
     };
 
+    private endTurnButton = {
+        x: 700,
+        y: 400,
+        width: 100,
+        height: 40,
+        text: "End Turn"
+    };
+
+    private isEndTurnButtonHovered = false;
+
     constructor(private canvas: HTMLCanvasElement, private game: Game, private renderer: GameRenderer) {
     }
 
     public updatePosition(x: number, y: number) {
         this.mousePosition.x = x;
         this.mousePosition.y = y;
+    }
+
+    private isPointInEndTurnButton(x: number, y: number): boolean {
+        return x >= this.endTurnButton.x && 
+               x <= this.endTurnButton.x + this.endTurnButton.width &&
+               y >= this.endTurnButton.y && 
+               y <= this.endTurnButton.y + this.endTurnButton.height;
     }
 
     public handleMouseInput(event: MouseEvent) {
@@ -34,6 +51,12 @@ export class InputController {
     }
 
     private handleMouseDown(event: MouseEvent) {
+        if (this.isPointInEndTurnButton(this.mousePosition.x, this.mousePosition.y)) {
+            console.log("End Turn button clicked");
+            this.game.endTurn();
+            return;
+        }
+
         // handle card from hand selection
         for(let i = 0; i <  this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay.length; i++) {
             const cardPosition = this.renderer.getPlayerHandCardPosition(i);
@@ -87,7 +110,10 @@ export class InputController {
 
         console.log("get from hand", card_position, "drop on table", table_position);
 
-        if (table_position !== undefined) this.game.playCard(card_position, table_position, PLAYER_ID.PLAYER_1);
+        if (table_position !== undefined && !this.game.cardPlayed){
+            this.game.playCard(card_position, table_position, PLAYER_ID.PLAYER_1);
+            this.game.cardPlayed = true;
+        }
        
 
         this.game.userPointer.card = Card.getEmpty();
@@ -95,5 +121,12 @@ export class InputController {
 
     private isInsideCard(x: number, y: number, cardX: number, cardY: number, cardWidth: number, cardHeight: number): boolean {
         return x >= cardX && x <= cardX + cardWidth && y >= cardY && y <= cardY + cardHeight;
+    }
+
+    public getEndTurnButton() {
+        return {
+            ...this.endTurnButton,
+            isHovered: this.isEndTurnButtonHovered
+        };
     }
 }

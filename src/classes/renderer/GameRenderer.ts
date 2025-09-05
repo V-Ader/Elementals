@@ -17,7 +17,7 @@ export class GameRenderer {
         this.resourceManager = new ResourceManager();
         this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
-        this.healthRenderer = new HealthRenderer(ctx);
+        this.healthRenderer = new HealthRenderer(ctx, this.resourceManager);
     }
 
     render(game: Game, inputController: InputController) { 
@@ -37,6 +37,16 @@ export class GameRenderer {
 
         // Render user pointer
         this.userPointerRenderer.render(game.userPointer, inputController);
+
+        // Render end turn button
+        const button = inputController.getEndTurnButton();
+        this.ctx.fillStyle = button.isHovered ? '#666666' : '#444444';
+        this.ctx.fillRect(button.x, button.y, button.width, button.height);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '16px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(button.text, button.x + button.width/2, button.y + button.height/2);
     }
 
     private renderOpponentCards(game: Game) {
@@ -81,7 +91,7 @@ export class GameRenderer {
     }
 
     private renderPlayersHealth(game: Game) {
-        this.healthRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.health, game.players.get(PLAYER_ID.PLAYER_1).player.health);
+        this.healthRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.health, game.players.get(PLAYER_ID.PLAYER_2).player.health);
     }
 
     private renderSlotRisk(risk: number, x: number, y: number) {
