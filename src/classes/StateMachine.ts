@@ -9,7 +9,8 @@ export interface State {
 export class StateMachine {
     private currentState: State | null = null;
 
-    changeState(newState: State) {
+    changeState(newState: State | undefined) {
+        if (!newState) return;
         this.currentState?.exit();
         this.currentState = newState;
         this.currentState.enter();

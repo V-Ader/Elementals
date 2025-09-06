@@ -40,7 +40,7 @@ const stateMachine = new StateMachine();
 // Start game in Main Menu state
 stateMachine.changeState(
     new MainMenuState(ctx, () => {
-        stateMachine.changeState(new PlayState(ctx, canvas, game));
+        stateMachine.changeState(new PlayState(ctx, canvas, game, stateMachine));
     })
 );
 

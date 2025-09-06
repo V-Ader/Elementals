@@ -9,14 +9,6 @@ export class InputController {
         y: 0    
     };
 
-    private endTurnButton = {
-        x: 700,
-        y: 400,
-        width: 100,
-        height: 40,
-        text: "End Turn"
-    };
-
     private isEndTurnButtonHovered = false;
 
     constructor(private canvas: HTMLCanvasElement, private game: Game, private renderer: GameRenderer) {
@@ -28,10 +20,11 @@ export class InputController {
     }
 
     private isPointInEndTurnButton(x: number, y: number): boolean {
-        return x >= this.endTurnButton.x && 
-               x <= this.endTurnButton.x + this.endTurnButton.width &&
-               y >= this.endTurnButton.y && 
-               y <= this.endTurnButton.y + this.endTurnButton.height;
+        const button = this.renderer.getEndTurnButtonPosition();
+        return x >= button.x && 
+               x <= button.x + button.width &&
+               y >= button.y && 
+               y <= button.y + button.height;
     }
 
     public handleMouseInput(event: MouseEvent) {
@@ -53,7 +46,11 @@ export class InputController {
     private handleMouseDown(event: MouseEvent) {
         if (this.isPointInEndTurnButton(this.mousePosition.x, this.mousePosition.y)) {
             console.log("End Turn button clicked");
-            this.game.endTurn();
+            if (this.game.cardPlayed || this.game.abilityPlayed) {
+                this.game.cardPlayed = false;
+                this.game.abilityPlayed = false;
+                this.game.endTurn();
+            }
             return;
         }
 
@@ -121,12 +118,5 @@ export class InputController {
 
     private isInsideCard(x: number, y: number, cardX: number, cardY: number, cardWidth: number, cardHeight: number): boolean {
         return x >= cardX && x <= cardX + cardWidth && y >= cardY && y <= cardY + cardHeight;
-    }
-
-    public getEndTurnButton() {
-        return {
-            ...this.endTurnButton,
-            isHovered: this.isEndTurnButtonHovered
-        };
     }
 }

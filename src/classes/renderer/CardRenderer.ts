@@ -58,24 +58,40 @@ export class CardRenderer {
         const cornerRadius = 10;
         const image = this.resourceManager.getCardImage(card.data.name);
 
+        this.ctx.save();
+        this.drawRoundedRect(x, y, width, height, cornerRadius);
+        this.ctx.clip();
+
         if (image) {
-            this.ctx.save();
-            this.drawRoundedRect(x, y, width, height, cornerRadius);
-            this.ctx.clip();
-            this.ctx.drawImage(image, x, y, width, height);
-            this.ctx.restore();
-            this.ctx.strokeStyle = "black";
-            this.ctx.lineWidth = 2;
-            this.ctx.stroke();
+            const imageAspectRatio = image.width / image.height;
+            const containerAspectRatio = width / height;
+
+            let drawX, drawY, drawWidth, drawHeight;
+
+            if (imageAspectRatio < containerAspectRatio) {
+                drawWidth = width;
+                drawHeight = width / imageAspectRatio; 
+                drawX = x;
+                drawY = y - (drawHeight - height) / 2;
+            } else { 
+                drawHeight = height;
+                drawWidth = height * imageAspectRatio;
+                drawX = x - (drawWidth - width) / 2;
+                drawY = y;
+            }
+
+            this.ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
         } else {
-            // Fallback to white background if image is not found
             this.ctx.fillStyle = "white";
-            this.ctx.strokeStyle = "black";
-            this.ctx.lineWidth = 2;
-            this.drawRoundedRect(x, y, width, height, cornerRadius);
-            this.ctx.fill();
-            this.ctx.stroke();
+            this.ctx.fillRect(x, y, width, height);
         }
+
+        this.ctx.restore();
+
+        this.ctx.strokeStyle = "black";
+        this.ctx.lineWidth = 2;
+        this.drawRoundedRect(x, y, width, height, cornerRadius);
+        this.ctx.stroke();
     }
 
     private drawCardSymbol(card: Card, x: number, y: number, width: number, height: number) {

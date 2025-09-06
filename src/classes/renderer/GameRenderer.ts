@@ -6,6 +6,9 @@ import { HealthRenderer } from "./HealthRenderer.js";
 import { ResourceManager } from "./ResourceManager.js";
 import { getScale } from "./Utlis.js";
 import { PLAYER_ID } from "../player/Player.js";
+import { AnimationsController } from "./animations/AnimationsController.js";
+import { Animation } from "./animations/Animation.js";
+import { GlowAnimation } from "./animations/GlowAnimation.js";
 
 export class GameRenderer {
     public cardRenderer: CardRenderer;
@@ -13,14 +16,21 @@ export class GameRenderer {
     private userPointerRenderer: UserPointerRenderer;
     private resourceManager: ResourceManager;
 
+    private animationsController: AnimationsController;
+
     constructor(private ctx: CanvasRenderingContext2D) {
         this.resourceManager = new ResourceManager();
         this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
         this.healthRenderer = new HealthRenderer(ctx, this.resourceManager);
+
+        this.animationsController = new AnimationsController();
+
+        //TESTING
+        this.animationsController.add(new GlowAnimation(100, 100, 50, 1000, "red"));
     }
 
-    render(game: Game, inputController: InputController) { 
+    render(game: Game, inputController: InputController | null = null) { 
         // Clear the canvas
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -36,17 +46,20 @@ export class GameRenderer {
         this.renderPlayersHealth(game);
 
         // Render user pointer
-        this.userPointerRenderer.render(game.userPointer, inputController);
+        if(inputController) this.userPointerRenderer.render(game.userPointer, inputController);
 
         // Render end turn button
-        const button = inputController.getEndTurnButton();
-        this.ctx.fillStyle = button.isHovered ? '#666666' : '#444444';
-        this.ctx.fillRect(button.x, button.y, button.width, button.height);
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(button.text, button.x + button.width/2, button.y + button.height/2);
+        this.renderEndTurnButton();
+
+        this.animationsController.render(this.ctx);
+    }
+
+    public addAnimation(animation: Animation) {
+        this.animationsController.add(animation);
+    }
+
+    public update(deltaTime: number) {
+        this.animationsController.update(deltaTime);
     }
 
     private renderOpponentCards(game: Game) {
@@ -101,4 +114,26 @@ export class GameRenderer {
         this.ctx.textBaseline = "middle";
         this.ctx.fillText(risk.toString(), x + this.cardRenderer.cardProperties.width / 2, y);
     }
+
+    public getEndTurnButtonPosition() {
+        return {
+            x: this.ctx.canvas.width - 150,
+            y: this.ctx.canvas.height - 70,
+            width: 100,
+            height: 40
+        };
+    }
+
+    private renderEndTurnButton() {
+        const text = "End Turn";
+        const button = this.getEndTurnButtonPosition();
+        // this.ctx.fillStyle = button.isHovered ? '#666666' : '#444444';
+        this.ctx.fillRect(button.x, button.y, button.width, button.height);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '16px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(text, button.x + button.width / 2, button.y + button.height / 2);
+    }
+    
 }
