@@ -35,8 +35,8 @@ export class TurnSummaryState implements State {
         }
     }
 
-    render() {
-        this.renderer.render(this.game, null);
+    render(deltaTime: number) {
+        this.renderer.render(deltaTime, this.game, null);
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {

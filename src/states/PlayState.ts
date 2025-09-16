@@ -41,11 +41,11 @@ export class PlayState implements State {
         }
 
         this.game.playTurn(); // handle players' movements
-        this.game.update(deltaTime); // update game based on the time and movements
+        // this.game.update(deltaTime); // update game based on the time and movements
     }
 
-    render(): void {
-        this.renderer.render(this.game, this.inputController);
+    render(deltaTime: number): void {
+        this.renderer.render(deltaTime, this.game, this.inputController);
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {

@@ -10,7 +10,7 @@ export class MainMenuState implements State {
     update(deltaTime: number) {
     }
 
-    render(): void {
+    render(deltaTime: number): void {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         this.ctx.fillStyle = "#000";
         this.ctx.font = "36px Arial";

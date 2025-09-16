@@ -1,5 +1,5 @@
+import { WindowResizeEffect } from "./effect/effects/WindowResizeEffect.js";
 import { ResourceManager } from "./ResourceManager.js";
-import { getScale } from "./Utlis.js";
 
 export class HealthRenderer {
     private context: CanvasRenderingContext2D;
@@ -11,7 +11,7 @@ export class HealthRenderer {
     render(playerHealth: number, opponentHealth: number) {
         const radius = 75;
 
-        const centerX = 200 * getScale();
+        const centerX = 200 * WindowResizeEffect.getScale();
         const centerY = this.context.canvas.height / 2 - radius;
 
         // Draw the circle

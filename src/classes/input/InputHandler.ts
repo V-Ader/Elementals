@@ -56,8 +56,8 @@ export class InputController {
 
         // handle card from hand selection
         for(let i = 0; i <  this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay.length; i++) {
-            const cardPosition = this.renderer.getPlayerHandCardPosition(i);
-            if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.width, cardPosition.height)) {
+            const cardPosition = this.renderer.getPlayerHandCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i].id);
+            if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 this.game.userPointer.card =  this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i];
                 this.game.userPointer.last_take_position = i;
                 break;
@@ -68,8 +68,8 @@ export class InputController {
         for (let i = 0; i < this.game.players.get(PLAYER_ID.PLAYER_1)?.cards.length; i++) {
             if ( this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.element == Element.UNDEFINED) continue;
 
-            const cardPosition = this.renderer.getPlayerCardPosition(i);
-            if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.width, cardPosition.height)) {
+            const cardPosition = this.renderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
+            if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 console.log("table card clicked", i);
 
                 // if ability clicked
@@ -98,8 +98,8 @@ export class InputController {
 
         // get dropping position
         for(let i = 0; i <  this.game.players.get(PLAYER_ID.PLAYER_1).cards.length; i++) {
-            const cardPosition = this.renderer.getPlayerCardPosition(i);
-            if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.width, cardPosition.height)) {
+            const cardPosition = this.renderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
+            if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 table_position = i;
                 break;
             }

@@ -4,11 +4,10 @@ import { UserPointerRenderer } from "./UserPointerRenderer.js";
 import { InputController } from "../input/InputHandler.js";
 import { HealthRenderer } from "./HealthRenderer.js";
 import { ResourceManager } from "./ResourceManager.js";
-import { getScale } from "./Utlis.js";
 import { PLAYER_ID } from "../player/Player.js";
-import { AnimationsController } from "./animations/AnimationsController.js";
-import { Animation } from "./animations/Animation.js";
-import { GlowAnimation } from "./animations/GlowAnimation.js";
+import { EffectsController } from "./effect/EffectsController.js";
+import { CardModel } from "./model/CardModel.js";
+
 
 export class GameRenderer {
     public cardRenderer: CardRenderer;
@@ -16,7 +15,8 @@ export class GameRenderer {
     private userPointerRenderer: UserPointerRenderer;
     private resourceManager: ResourceManager;
 
-    private animationsController: AnimationsController;
+    public effectsController: EffectsController;
+
 
     constructor(private ctx: CanvasRenderingContext2D) {
         this.resourceManager = new ResourceManager();
@@ -24,13 +24,13 @@ export class GameRenderer {
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
         this.healthRenderer = new HealthRenderer(ctx, this.resourceManager);
 
-        this.animationsController = new AnimationsController();
-
-        //TESTING
-        this.animationsController.add(new GlowAnimation(100, 100, 50, 1000, "red"));
+        this.effectsController = new EffectsController();
     }
 
-    render(game: Game, inputController: InputController | null = null) { 
+    render(deltaTime: number, game: Game, inputController: InputController | null = null) { 
+        // update all animations in pool
+        this.effectsController.update(deltaTime);
+
         // Clear the canvas
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -50,69 +50,81 @@ export class GameRenderer {
 
         // Render end turn button
         this.renderEndTurnButton();
-
-        this.animationsController.render(this.ctx);
     }
 
-    public addAnimation(animation: Animation) {
-        this.animationsController.add(animation);
-    }
-
-    public update(deltaTime: number) {
-        this.animationsController.update(deltaTime);
+    // public addAnimation(animation: Animation) {
+    //     this.animationsController.add(animation);
+    // }
+    getScale() {
+        return 1;
     }
 
     private renderOpponentCards(game: Game) {
         for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_2).cards.length; i++) {
-            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_2).cards[i], this.getOpponentCardPosition(i));
-            this.renderSlotRisk(game.players.get(PLAYER_ID.PLAYER_2).cards_risks[i], this.getOpponentCardPosition(i).x, this.getOpponentCardPosition(i).y - 20 * getScale());
+            const card_id = game.players.get(PLAYER_ID.PLAYER_2).cards[i].id;
+            const cardPosition = this.getOpponentCardPosition(i, card_id);
+                       
+            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_2).cards[i], cardPosition);
+            this.renderSlotRisk(game.players.get(PLAYER_ID.PLAYER_2).cards_risks[i], cardPosition.x, cardPosition.y - cardPosition.model.fontSize - 10, cardPosition.model.width);
         } 
     }
 
-    public getOpponentCardPosition(cardNumber: number) {
-        const totalWidth = 3 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
-        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);
-        const y = 100 * getScale();
-        return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
+    public getOpponentCardPosition(cardNumber: number, card_id: string) {
+        var model =  this.effectsController.apply(new CardModel(), card_id);
+
+        const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = 100 * this.getScale();
+        return { x, y, model: model };
     }
 
     private renderPlayerCards(game: Game) {
         for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_1).cards.length; i++) {
-            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).cards[i], this.getPlayerCardPosition(i));
-            this.renderSlotRisk(game.players.get(PLAYER_ID.PLAYER_1).cards_risks[i], this.getPlayerCardPosition(i).x, this.getPlayerCardPosition(i).y + this.cardRenderer.cardProperties.height + 20);
+            const card_id = game.players.get(PLAYER_ID.PLAYER_1).cards[i].id;
+            const cardPosition = this.getPlayerCardPosition(i, card_id);
+
+            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).cards[i], cardPosition);
+            this.renderSlotRisk(game.players.get(PLAYER_ID.PLAYER_1).cards_risks[i], cardPosition.x, cardPosition.y +cardPosition.model.height + 20, cardPosition.model.width);
         }    
     }
 
-    public getPlayerCardPosition(cardNumber: number) {
-        const totalWidth = 3 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
-        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);
-        const y = this.ctx.canvas.height / 2 - 100 * getScale();
-        return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
+    public getPlayerCardPosition(cardNumber: number, card_id: string) {
+        var model =  this.effectsController.apply(new CardModel(), card_id);
+
+        const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = this.ctx.canvas.height / 2 - 100 * this.getScale();
+        return { x, y, model: model};
     }
 
     private renderPlayerHandCards(game: Game) {
         for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay.length; i++) {
-            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i], this.getPlayerHandCardPosition(i));
+            const card_id = game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i].id;
+            const cardPosition = this.getPlayerHandCardPosition(i, card_id);
+
+            this.cardRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i], cardPosition);
         }
     }
 
-    public getPlayerHandCardPosition(cardNumber: number) {
-        const totalWidth = 4 * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2) - this.cardRenderer.cardProperties.maring * 2;
-        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (this.cardRenderer.cardProperties.width + this.cardRenderer.cardProperties.maring * 2);        
-        const y = this.ctx.canvas.height - (this.cardRenderer.cardProperties.height + this.cardRenderer.cardProperties.maring * 2);
-        return { x, y, width: this.cardRenderer.cardProperties.width, height: this.cardRenderer.cardProperties.height };
+    public getPlayerHandCardPosition(cardNumber: number, card_id: string) {
+        var model =  this.effectsController.apply(new CardModel(), card_id);
+
+        const totalWidth = 4 * (model.width + model.maring * 2) - model.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);        
+        const y = this.ctx.canvas.height - (model.height + model.maring * 2);
+        return { x, y, model: model};
     }
 
     private renderPlayersHealth(game: Game) {
         this.healthRenderer.render(game.players.get(PLAYER_ID.PLAYER_1).player.health, game.players.get(PLAYER_ID.PLAYER_2).player.health);
     }
 
-    private renderSlotRisk(risk: number, x: number, y: number) {
+    private renderSlotRisk(risk: number, x: number, y: number, width: number) {
         this.ctx.fillStyle = "black";
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
-        this.ctx.fillText(risk.toString(), x + this.cardRenderer.cardProperties.width / 2, y);
+        this.ctx.fillText(risk.toString(), x + width / 2, y);
     }
 
     public getEndTurnButtonPosition() {

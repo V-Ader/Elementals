@@ -56,7 +56,7 @@ function mainLoop(timestamp: number) {
     lastTime = timestamp;
     stateMachine.update(deltaTime);
 
-    stateMachine.render();
+    stateMachine.render(deltaTime);
 
     requestAnimationFrame(mainLoop);
 }

@@ -2,7 +2,7 @@ export interface State {
     enter(): void;
     update(deltaTime: number): void;
     handleInput(event: MouseEvent | KeyboardEvent): void;
-    render(): void;
+    render(deltaTime: number): void;
     exit(): void;
 }
 
@@ -20,8 +20,8 @@ export class StateMachine {
         this.currentState?.update(deltaTime);
     }
 
-    render() {
-        this.currentState?.render();
+    render(deltaTime: number) {
+        this.currentState?.render(deltaTime);
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {
