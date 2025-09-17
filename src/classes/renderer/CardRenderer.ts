@@ -1,11 +1,16 @@
 import { Card, Element } from "../card/Card.js";
+import { WindowResizeEffect } from "./effect/effects/WindowResizeEffect.js";
 import { EffectsController } from "./effect/EffectsController.js";
 import { CardModel } from "./model/CardModel.js";
 import { ResourceManager } from "./ResourceManager.js";
 
 export class CardRenderer {
 
-    constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {}
+    public effectsController: EffectsController;
+
+    constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {
+        this.effectsController = new EffectsController();
+    }
 
     render(card: Card, { x, y, model }: { x: number, y: number, model: CardModel}) {
         // Draw card background
@@ -23,6 +28,72 @@ export class CardRenderer {
 
     renderCenered(card: Card, { x, y }: { x: number, y: number }, model: CardModel) {
         this.render(card, { x: x - model.width / 2, y: y - model.height / 2, model});
+    }
+
+    renderAbilityButton(card: Card, { x, y }: { x: number, y: number }, model: CardModel) {
+        if (!card.data.ability) {
+            return;
+        }
+
+        const image = this.resourceManager.getMaterialImage('pergamin');
+
+        // Draw button background
+        if (image) {
+            this.ctx.save();
+            this.drawRoundedRect(x, y, model.actionButton.width, model.actionButton.height, model.actionButton.cornerRadius);
+            this.ctx.clip();
+            this.ctx.drawImage(image, x, y, model.actionButton.width, model.actionButton.height);
+            this.ctx.restore();
+        } else {
+            this.ctx.fillStyle = "lightgray";
+            this.ctx.strokeStyle = "black";
+            this.ctx.lineWidth = 1;
+            this.drawRoundedRect(x, y, model.actionButton.width, model.actionButton.height, model.actionButton.cornerRadius);
+            this.ctx.fill();
+            this.ctx.stroke();
+        }
+
+        // Draw button text
+        this.ctx.fillStyle = "black";
+        this.ctx.font = `${model.actionButton.fontSize}px Arial`;
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText(card.data.ability?.name, x + model.actionButton.width / 2, y + model.actionButton.height / 2);
+    }
+
+    getAbilityButtonPosition(cardarea: { x: number, y: number, model: CardModel}) {
+        return { x: cardarea.x, y: cardarea.y + cardarea.model.height - cardarea.model.actionButton.height, width: cardarea.model.actionButton.width, height: cardarea.model.actionButton.height };
+    }
+
+    getOpponentCardPosition(cardNumber: number, card_id: string) {
+        var model =  this.effectsController.apply(new CardModel(), card_id);
+
+        const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = 100 * this.getScale();
+        return { x, y, model: model };
+    }
+
+    getPlayerCardPosition(cardNumber: number, card_id: string) {
+        var model =  this.effectsController.apply(new CardModel(), card_id);
+
+        const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = this.ctx.canvas.height / 2 - 100 * this.getScale();
+        return { x, y, model: model};
+    }
+
+    getPlayerHandCardPosition(cardNumber: number, card_id: string) {
+        var model =  this.effectsController.apply(new CardModel(), card_id);
+
+        const totalWidth = 4 * (model.width + model.maring * 2) - model.maring * 2;
+        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);        
+        const y = this.ctx.canvas.height - (model.height + model.maring * 2);
+        return { x, y, model: model};
+    }
+
+    private getScale() {
+        return WindowResizeEffect.getScale();
     }
 
     private drawCardBackground(card: Card, x: number, y: number, model: CardModel) {
@@ -129,40 +200,5 @@ export class CardRenderer {
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
         this.ctx.fillText(card.data.risk.toString(), circleX, circleY);
-    }
-
-    renderAbilityButton(card: Card, { x, y }: { x: number, y: number }, model: CardModel) {
-        if (!card.data.ability) {
-            return;
-        }
-
-        const image = this.resourceManager.getMaterialImage('pergamin');
-
-        // Draw button background
-        if (image) {
-            this.ctx.save();
-            this.drawRoundedRect(x, y, model.actionButton.width, model.actionButton.height, model.actionButton.cornerRadius);
-            this.ctx.clip();
-            this.ctx.drawImage(image, x, y, model.actionButton.width, model.actionButton.height);
-            this.ctx.restore();
-        } else {
-            this.ctx.fillStyle = "lightgray";
-            this.ctx.strokeStyle = "black";
-            this.ctx.lineWidth = 1;
-            this.drawRoundedRect(x, y, model.actionButton.width, model.actionButton.height, model.actionButton.cornerRadius);
-            this.ctx.fill();
-            this.ctx.stroke();
-        }
-
-        // Draw button text
-        this.ctx.fillStyle = "black";
-        this.ctx.font = `${model.actionButton.fontSize}px Arial`;
-        this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "middle";
-        this.ctx.fillText(card.data.ability?.name, x + model.actionButton.width / 2, y + model.actionButton.height / 2);
-    }
-
-    getAbilityButtonPosition(cardarea: { x: number, y: number, model: CardModel}) {
-        return { x: cardarea.x, y: cardarea.y + cardarea.model.height - cardarea.model.actionButton.height, width: cardarea.model.actionButton.width, height: cardarea.model.actionButton.height };
     }
 }

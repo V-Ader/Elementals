@@ -2,6 +2,7 @@ import { Game } from "../classes/game/Game.js";
 import { InputController } from "../classes/input/InputHandler.js";
 import { GameRenderer } from "../classes/renderer/GameRenderer.js";
 import { State, StateMachine } from "../classes/StateMachine.js";
+import { ApplyAbilityState } from "./ApplyAbilityState.js";
 import { TurnSummaryState } from "./TurnSummaryState.js";
 
 export class PlayState implements State {
@@ -20,6 +21,7 @@ export class PlayState implements State {
     ) {
         this.inputController = new InputController(this.canvas, this.game, this.renderer);
         this.states.set('turnSummary', new TurnSummaryState(this.canvas, this.game, this.renderer, () => this.stateMachine.changeState(this)));
+        // this.states.set('applyAbility', new ApplyAbilityState(this.game, , this.renderer,() => this.stateMachine.changeState(this)));
     }
 
     enter() {
@@ -27,6 +29,14 @@ export class PlayState implements State {
     }
 
     update(deltaTime: number) {
+        if (this.game.abilitiesToApply.length > 0) {
+            const ability = this.game.abilitiesToApply.shift();
+            if (ability !== undefined) {
+                const newState = new ApplyAbilityState(this.game, ability, this.renderer, () => this.stateMachine.changeState(this));
+                this.stateMachine.changeState(newState);
+            }
+        }
+
         if (this.waitForNewRound) {
             this.game.startNewRound();
             this.waitForNewRound = false;

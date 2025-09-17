@@ -10,8 +10,8 @@ export class UserPointerRenderer {
     render(controller: UserPointer, inputController: InputController) {
         if (controller.card.data.element !== Element.UNDEFINED) {
             var model = new CardModel();
-            // model = this.cardRenderer.(model);
-            this.cardRenderer.renderCenered(controller.card, {x: inputController.mousePosition.x, y: inputController.mousePosition.y}, new CardModel());
+            model = this.cardRenderer.effectsController.apply(model);
+            this.cardRenderer.renderCenered(controller.card, {x: inputController.mousePosition.x, y: inputController.mousePosition.y}, model);
         }
     }
 }

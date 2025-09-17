@@ -1,3 +1,4 @@
+import { Game } from "../../game/Game.js";
 import { CardModel } from "../model/CardModel.js";
 import { Effect } from "./Effect.js";
 import { WindowResizeEffect } from "./effects/WindowResizeEffect.js";
@@ -10,13 +11,20 @@ export class EffectsController {
     
 
     update(deltaTime: number) {
-        this.effectsCommonPool.forEach(effect => effect.update(deltaTime));
+        this.effectsCommonPool.forEach(effect => {
+            if (!effect.update(deltaTime)) {
+                this.effectsCommonPool.splice(this.effectsCommonPool.indexOf(effect), 1);
+            }
+        });
         this.effectsPool.forEach(
-            effects =>
-                effects.forEach(effect => 
-                    effect.update(deltaTime)
-                )
-            )
+            effects => {
+                effects.forEach(effect => {
+                    if (!effect.update(deltaTime)) {
+                        effects.splice(effects.indexOf(effect), 1);
+                    }
+                });
+            }
+        );
     };
 
     apply(model: CardModel, id?: string): CardModel {
@@ -28,7 +36,11 @@ export class EffectsController {
         return localModel;
     }
 
-    addEffect(id: string, effect: Effect<CardModel>) {
+    addEffect(effect: Effect<CardModel>, id?: string) {
+        if (!id) {
+            this.effectsCommonPool.push(effect);
+            return;
+        }
         this.effectsPool.set(id, [...(this.effectsPool.get(id) || []), effect]);
     }
 

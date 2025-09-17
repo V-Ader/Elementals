@@ -11,7 +11,7 @@ export class WindowResizeEffect extends Effect<CardModel> {
 
     update(deltaTime: number): boolean {
         this.scale = WindowResizeEffect.getScale();
-        return false;
+        return true;
     }   
 
     apply(card: CardModel): CardModel {

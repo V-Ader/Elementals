@@ -2,6 +2,11 @@ import { Card, Element, ElementMatrix } from "../card/Card.js";
 import { UserPointer } from "../UserPointer.js";
 import { Player, PLAYER_ID } from "../player/Player.js";
 import { GamePlayer, GamePlayers } from "./GamePlayer.js";
+import { State } from "../StateMachine.js";
+import { Effect } from "../renderer/effect/Effect.js";
+import { Model } from "../renderer/model/Models.js";
+import { CardModel } from "../renderer/model/CardModel.js";
+import { Ability } from "../card/ability/Ability.js";
 
 export class Game {
     public BOARD_CARD_SLOT_COUNT = 3;
@@ -13,6 +18,7 @@ export class Game {
     public abilityPlayed: boolean = false;
 
     public userPointer = new UserPointer();
+    public abilitiesToApply: Ability[] = [];
 
     constructor(player1: Player, player2: Player) {
         this.players = new GamePlayers(player1, player2);    

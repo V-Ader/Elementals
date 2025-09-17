@@ -1,3 +1,4 @@
+import { Game } from "../../game/Game.js";
 import { Model } from "../model/Models.js";
 
 export class Effect<T extends Model> {

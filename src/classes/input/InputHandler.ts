@@ -1,3 +1,4 @@
+import { Ability } from "../card/ability/Ability.js";
 import { Card, Element } from "../card/Card.js";
 import { Game } from "../game/Game.js";
 import { PLAYER_ID } from "../player/Player.js";
@@ -56,7 +57,7 @@ export class InputController {
 
         // handle card from hand selection
         for(let i = 0; i <  this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay.length; i++) {
-            const cardPosition = this.renderer.getPlayerHandCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i].id);
+            const cardPosition = this.renderer.cardRenderer.getPlayerHandCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i].id);
             if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 this.game.userPointer.card =  this.game.players.get(PLAYER_ID.PLAYER_1).player.cardsInPlay[i];
                 this.game.userPointer.last_take_position = i;
@@ -68,7 +69,7 @@ export class InputController {
         for (let i = 0; i < this.game.players.get(PLAYER_ID.PLAYER_1)?.cards.length; i++) {
             if ( this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.element == Element.UNDEFINED) continue;
 
-            const cardPosition = this.renderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
+            const cardPosition = this.renderer.cardRenderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
             if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 console.log("table card clicked", i);
 
@@ -77,7 +78,11 @@ export class InputController {
                 if ( this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability) {
                     if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, button.x, button.y, button.width, button.height)) {
                         console.log("ability clicked");
-                         this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability?.execute(this.game);
+                        // this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability?.execute(this.game);
+                        const ability = this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability;
+                        if (ability) {
+                            this.game.abilitiesToApply.push(ability);
+                        }
                         break;
                     }
                 }
@@ -98,7 +103,7 @@ export class InputController {
 
         // get dropping position
         for(let i = 0; i <  this.game.players.get(PLAYER_ID.PLAYER_1).cards.length; i++) {
-            const cardPosition = this.renderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
+            const cardPosition = this.renderer.cardRenderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
             if(this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 table_position = i;
                 break;
