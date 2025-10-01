@@ -9,7 +9,9 @@ export class ReduceRisk extends Ability {
     execute(game: Game): void {        
         if (this.isActive) {
             game.players.player_1.cards.map(card => {
-                card.data.risk = Math.floor(card.data.risk / 2);
+                if (card.id === this.corelated_card_id) {
+                    card.data.risk = Math.floor(card.data.risk / 2);
+                }
                 return card;
             });
             this.isActive = false;

@@ -2,6 +2,13 @@
 
 Elementals to gra karciana oparta na pojedynkach żywiołów, w której gracze rywalizują, zagrywając karty reprezentujące różne elementy i zdolności. Celem gry jest strategiczne pokonanie przeciwnika poprzez odpowiednie wykorzystanie kart i mechanik ryzyka.
 
+## Dokumentacja
+
+- [Architektura aplikacji](docs/architecture.md) - szczegółowy opis warstw i struktury aplikacji
+- [Komponenty](docs/components.md) - opis głównych komponentów systemu
+- [System efektów](docs/effects.md) - dokumentacja systemu efektów
+- [Przewodnik implementacyjny](docs/implementation-guide.md) - przykłady implementacji nowych funkcjonalności
+
 ## Sposób uruchomienia
 
 ### Development
@@ -26,30 +33,32 @@ Elementals to gra karciana oparta na pojedynkach żywiołów, w której gracze r
    ```
    npm start
    ```
-3. Aplikacja będzie dostępna pod adresem skonfigurowanym w środowisku produkcyjnym.
 
-## Struktura katalogów
+## Szybki przegląd architektury
 
-- `src/` – główny katalog źródłowy aplikacji
-  - `classes/` – logika gry, klasy reprezentujące graczy, karty, planszę itp.
-    - `card/` – definicje kart i powiązanych mechanik
-    - `game/` – logika rozgrywki, klasy Game, GamePlayer
-    - `player/` – klasy graczy
-  - `assets/` – zasoby statyczne (grafiki, dźwięki)
-  - `components/` – komponenty UI (jeśli dotyczy)
-  - `utils/` – funkcje pomocnicze
-- `public/` – pliki statyczne serwowane bezpośrednio
-- `README.md` – dokumentacja projektu
-- `package.json` – zależności i skrypty
+### Warstwa logiki
+- Znajduje się w `src/classes/`
+- Zawiera logikę biznesową gry
+- Implementuje stany gry, system kart i graczy
+
+### Warstwa kontroli
+- Znajduje się w `src/classes/input/`
+- Odpowiada za obsługę inputu użytkownika
+- Mapuje akcje użytkownika na polecenia w grze
+
+### Warstwa renderowania
+- Znajduje się w `src/classes/renderer/`
+- Odpowiada za wizualną reprezentację gry
+- Implementuje system efektów i animacji
 
 ## Rozwój aplikacji
 
-- Nowe funkcjonalności dodawaj w odpowiednich podkatalogach `src/classes/` zgodnie z zasadą pojedynczej odpowiedzialności.
-- Staraj się pisać kod modularnie i testowalnie.
-- Przed dodaniem nowej klasy lub funkcji, sprawdź czy nie istnieje już podobna implementacja.
-- Dokumentuj publiczne metody i klasy.
-- Do testowania używaj narzędzi zgodnych z ekosystemem (np. Jest, Vitest).
-- Zgłaszaj błędy i propozycje zmian poprzez system issue/pull request.
+Przed rozpoczęciem pracy nad nową funkcjonalnością:
+1. Zapoznaj się z odpowiednim rozdziałem dokumentacji
+2. Sprawdź istniejące implementacje podobnych funkcjonalności
+3. Postępuj zgodnie z wzorcami projektowymi projektu
+
+Więcej informacji w sekcji [Przewodnik implementacyjny](docs/implementation-guide.md).
 
 ---
 

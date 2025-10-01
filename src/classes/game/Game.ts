@@ -20,6 +20,8 @@ export class Game {
     public userPointer = new UserPointer();
     public abilitiesToApply: Ability[] = [];
 
+    public roundOverFlag = false;
+
     constructor(player1: Player, player2: Player) {
         this.players = new GamePlayers(player1, player2);    
         this.initializeGame();
@@ -59,6 +61,10 @@ export class Game {
             console.log(`Turn ${this.turn}: Player ${this.turn % 2 + 1}'s move.`); 
             this.cardPlayed = false; 
             this.abilityPlayed = false;      
+
+            if (this.isRoundToBeOver()) {
+                this.roundOverFlag = true;
+            }
         }
     }
 
@@ -107,7 +113,7 @@ export class Game {
     }
 
 
-    isRoundOver() {
+    isRoundToBeOver() {
         for (let i = 0; i < this.BOARD_CARD_SLOT_COUNT; i++) {
             if (this.players.get(PLAYER_ID.PLAYER_1)?.cards[i].data.element === Element.UNDEFINED) return false;
             if (this.players.get(PLAYER_ID.PLAYER_2)?.cards[i].data.element === Element.UNDEFINED) return false;

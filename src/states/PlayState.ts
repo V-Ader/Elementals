@@ -38,20 +38,21 @@ export class PlayState implements State {
         }
 
         if (this.waitForNewRound) {
-            this.game.startNewRound();
             this.waitForNewRound = false;
+            this.game.startNewRound();
         }
 
-        if (this.game.isRoundOver()) {
+        if (this.game.roundOverFlag) {
             this.waitForNewRound = true;
+            this.game.roundOverFlag = false;
 
             console.log("Round Over");
             this.stateMachine.changeState(this.states.get('turnSummary'));
+
             return;
         }
 
-        this.game.playTurn(); // handle players' movements
-        // this.game.update(deltaTime); // update game based on the time and movements
+        this.game.playTurn();
     }
 
     render(deltaTime: number): void {

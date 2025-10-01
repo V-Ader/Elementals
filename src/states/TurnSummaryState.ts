@@ -5,7 +5,9 @@ import { State, StateMachine } from "../classes/StateMachine.js";
 import { PlayState } from "./PlayState.js";
 
 export class TurnSummaryState implements State {
-    private timeLeft: number = 5; // 10 seconds in milliseconds
+    private timeLeft: number = 0; 
+    private tableCardsIteration = 0;
+    private iterationTime = 2;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -15,7 +17,8 @@ export class TurnSummaryState implements State {
     ) {}
 
     enter() {
-        this.timeLeft = 5;
+        this.timeLeft = this.iterationTime;
+        this.tableCardsIteration = 0;
     }
 
     update(deltaTime: number) {
@@ -23,14 +26,12 @@ export class TurnSummaryState implements State {
         this.timeLeft -= deltaTime;
         
         if (this.timeLeft <= 0) {
-            for (let i = 0; i < this.game.BOARD_CARD_SLOT_COUNT; i++) {
-                this.game.resolveCardPair(i);
-            }
-            if (this.game.isGameOver()) {
-                this.game.startNewGame();
-            } else {
-                this.game.startNewRound();
-            }
+            this.game.resolveCardPair(this.tableCardsIteration);
+
+            this.tableCardsIteration += 1;
+            this.timeLeft = this.iterationTime;
+        }
+        if (this.tableCardsIteration >= this.game.BOARD_CARD_SLOT_COUNT) {
             this.returnToPlay();
         }
     }
@@ -39,7 +40,7 @@ export class TurnSummaryState implements State {
         this.renderer.render(deltaTime, this.game, null);
     }
 
-    handleInput(event: MouseEvent | KeyboardEvent) {
+    handleInput(event: MouseEvent | KeyboardEvent): void {
         // NO INPUT EXPECTED
     }
 

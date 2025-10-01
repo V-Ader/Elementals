@@ -47,7 +47,7 @@ export class InputController {
     private handleMouseDown(event: MouseEvent) {
         if (this.isPointInEndTurnButton(this.mousePosition.x, this.mousePosition.y)) {
             console.log("End Turn button clicked");
-            if (this.game.cardPlayed || this.game.abilityPlayed) {
+            if (this.game.cardPlayed) {
                 this.game.cardPlayed = false;
                 this.game.abilityPlayed = false;
                 this.game.endTurn();
