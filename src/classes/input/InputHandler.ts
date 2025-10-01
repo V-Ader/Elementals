@@ -1,3 +1,4 @@
+import { StateChangeTrigger, STATE_CHANGE_TYPE } from "../../states/StateChangeTrigger.js";
 import { Ability } from "../card/ability/Ability.js";
 import { Card, Element } from "../card/Card.js";
 import { Game } from "../game/Game.js";
@@ -72,20 +73,21 @@ export class InputController {
             const cardPosition = this.renderer.cardRenderer.getPlayerCardPosition(i, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id);
             if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, cardPosition.x, cardPosition.y, cardPosition.model.width, cardPosition.model.height)) {
                 console.log("table card clicked", i);
-
+                this.game.gameStateChangePool.push(new StateChangeTrigger(STATE_CHANGE_TYPE.DISPLAY_CARD, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id));
+                break;
                 // if ability clicked
-                const button = this.renderer.cardRenderer.getAbilityButtonPosition(cardPosition);
-                if ( this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability) {
-                    if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, button.x, button.y, button.width, button.height)) {
-                        console.log("ability clicked");
-                        // this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability?.execute(this.game);
-                        const ability = this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability;
-                        if (ability) {
-                            this.game.abilitiesToApply.push(ability);
-                        }
-                        break;
-                    }
-                }
+                // const button = this.renderer.cardRenderer.getAbilityButtonPosition(cardPosition);
+                // if ( this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability) {
+                //     if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, button.x, button.y, button.width, button.height)) {
+                //         console.log("ability clicked");
+                //         // this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability?.execute(this.game);
+                //         const ability = this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability;
+                //         if (ability) {
+                //             this.game.gameStateChangePool.push(new StateChangeTrigger(STATE_CHANGE_TYPE.ABILITY, ability));
+                //         }
+                //         break;
+                //     }
+                // }
             }
         }
     }

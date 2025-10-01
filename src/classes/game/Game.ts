@@ -2,6 +2,7 @@ import { Card, Element, ElementMatrix } from "../card/Card.js";
 import { UserPointer } from "../UserPointer.js";
 import { Player, PLAYER_ID } from "../player/Player.js";
 import { GamePlayer, GamePlayers } from "./GamePlayer.js";
+import { StateChangeTrigger } from "../../states/StateChangeTrigger.js";
 import { State } from "../StateMachine.js";
 import { Effect } from "../renderer/effect/Effect.js";
 import { Model } from "../renderer/model/Models.js";
@@ -18,7 +19,7 @@ export class Game {
     public abilityPlayed: boolean = false;
 
     public userPointer = new UserPointer();
-    public abilitiesToApply: Ability[] = [];
+    public gameStateChangePool: StateChangeTrigger[] = [];
 
     public roundOverFlag = false;
 

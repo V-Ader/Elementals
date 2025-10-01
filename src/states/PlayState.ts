@@ -4,6 +4,10 @@ import { GameRenderer } from "../classes/renderer/GameRenderer.js";
 import { State, StateMachine } from "../classes/StateMachine.js";
 import { ApplyAbilityState } from "./ApplyAbilityState.js";
 import { TurnSummaryState } from "./TurnSummaryState.js";
+import { STATE_CHANGE_TYPE } from "./StateChangeTrigger.js";
+import { DisplayCardState } from "./DisplayCardState.js";
+import { ResourceManager } from "../classes/renderer/ResourceManager.js";
+
 
 export class PlayState implements State {
     private inputController: InputController;
@@ -17,7 +21,8 @@ export class PlayState implements State {
         private canvas: HTMLCanvasElement,
         private game: Game,
         private stateMachine: StateMachine,
-        private renderer = new GameRenderer(ctx)
+        private resourceManager: ResourceManager,
+        private renderer = new GameRenderer(ctx, resourceManager)
     ) {
         this.inputController = new InputController(this.canvas, this.game, this.renderer);
         this.states.set('turnSummary', new TurnSummaryState(this.canvas, this.game, this.renderer, () => this.stateMachine.changeState(this)));
@@ -29,11 +34,17 @@ export class PlayState implements State {
     }
 
     update(deltaTime: number) {
-        if (this.game.abilitiesToApply.length > 0) {
-            const ability = this.game.abilitiesToApply.shift();
-            if (ability !== undefined) {
-                const newState = new ApplyAbilityState(this.game, ability, this.renderer, () => this.stateMachine.changeState(this));
-                this.stateMachine.changeState(newState);
+        if (this.game.gameStateChangePool.length > 0) {
+            const stateChange = this.game.gameStateChangePool.shift();
+            switch(stateChange?.type) {
+                case STATE_CHANGE_TYPE.ABILITY:
+                    var ability = stateChange.data;
+                    this.stateMachine.changeState(new ApplyAbilityState(this.game, ability, this.renderer, () => this.stateMachine.changeState(this)));
+                    break;                
+                case STATE_CHANGE_TYPE.DISPLAY_CARD:
+                    var cardId = stateChange.data;
+                    this.stateMachine.changeState(new DisplayCardState(this.game, cardId, this.renderer, () => this.stateMachine.changeState(this)));
+                    break;
             }
         }
 

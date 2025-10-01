@@ -15,16 +15,7 @@ export class WindowResizeEffect extends Effect<CardModel> {
     }   
 
     apply(card: CardModel): CardModel {
-        return new CardModel(
-            card.width * this.scale,
-            card.height * this.scale,
-            card.cornerRadius * this.scale,
-            card.maring * this.scale,
-            card.fontSize * this.scale,
-            { size: card.icon.size * this.scale, padding: card.icon.padding * this.scale },
-            { circleRadius: card.elementIndicator.circleRadius * this.scale, padding: card.elementIndicator.padding * this.scale },
-            { width: card.actionButton.width * this.scale, height: card.actionButton.height * this.scale, cornerRadius: card.actionButton.cornerRadius * this.scale, fontSize: card.actionButton.fontSize * WindowResizeEffect.getScale() }
-        )
+        return new CardModel().resize(this.scale);
     }
 
     public static getScale(): number {

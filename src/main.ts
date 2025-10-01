@@ -5,6 +5,8 @@ import { Game } from "./classes/game/Game.js";
 import { PLAYER_ID } from "./classes/player/Player.js";
 import { HumanPlayer } from "./classes/player/HumanPlayer.js";
 import { BotPlayer } from "./classes/player/BotPlayer.js";
+import { ResourceManager } from "./classes/renderer/ResourceManager.js";
+
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
@@ -37,11 +39,13 @@ const game = new Game(player1, player2);
 
 const stateMachine = new StateMachine();
 
+const resourceManager = new ResourceManager();
+
 // Start game in Main Menu state
 stateMachine.changeState(
     new MainMenuState(ctx, () => {
-        stateMachine.changeState(new PlayState(ctx, canvas, game, stateMachine));
-    })
+        stateMachine.changeState(new PlayState(ctx, canvas, game, stateMachine, resourceManager));
+    }, resourceManager)
 );
 
 // Main loop

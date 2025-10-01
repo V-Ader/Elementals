@@ -28,4 +28,17 @@ export class CardModel implements Model {
             this.elementIndicator = elementIndicator;
             this.actionButton = actionButton;
         }
+    
+    resize(scale: number): CardModel {
+        return new CardModel(
+            this.width * scale,
+            this.height * scale,
+            this.cornerRadius * scale,
+            this.maring * scale,
+            this.fontSize * scale,
+            { size: this.icon.size * scale, padding: this.icon.padding * scale },
+            { circleRadius: this.elementIndicator.circleRadius * scale, padding: this.elementIndicator.padding * scale },
+            { width: this.actionButton.width * scale, height: this.actionButton.height * scale, cornerRadius: this.actionButton.cornerRadius * scale, fontSize: this.actionButton.fontSize * scale }
+        );
+    }
 };

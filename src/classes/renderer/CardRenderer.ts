@@ -183,7 +183,7 @@ export class CardRenderer {
 
     private drawCardRisk(card: Card, x: number, y: number, model: CardModel) {
         const padding = 5;
-        const circleRadius = 15;
+        const circleRadius = model.icon.size / 2;
         const circleX = x + circleRadius + padding;
         const circleY = y + circleRadius + padding;
 

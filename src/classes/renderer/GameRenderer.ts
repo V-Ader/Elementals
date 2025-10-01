@@ -13,10 +13,8 @@ export class GameRenderer {
     public cardRenderer: CardRenderer;
     private healthRenderer: HealthRenderer;
     private userPointerRenderer: UserPointerRenderer;
-    private resourceManager: ResourceManager;
 
-    constructor(private ctx: CanvasRenderingContext2D) {
-        this.resourceManager = new ResourceManager();
+    constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {
         this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
         this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
         this.healthRenderer = new HealthRenderer(ctx, this.resourceManager);
@@ -28,6 +26,9 @@ export class GameRenderer {
 
         // Clear the canvas
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        // Draw background
+        this.renderBackground();
 
         // Render enemy cards in play
         this.renderOpponentCards(game);
@@ -47,6 +48,24 @@ export class GameRenderer {
         this.renderEndTurnButton();
     }
 
+
+    public getWindowSize() {
+        return {
+            width: this.ctx.canvas.width,
+            height: this.ctx.canvas.height
+        };
+    }
+
+    public getContext() {
+        return this.ctx;
+    }
+
+    private renderBackground() {
+        const background = this.resourceManager.getBackgroundImage('background1');
+        if (background) {
+            this.ctx.drawImage(background, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        }
+    }
 
     private renderOpponentCards(game: Game) {
         for (let i = 0; i < game.players.get(PLAYER_ID.PLAYER_2).cards.length; i++) {

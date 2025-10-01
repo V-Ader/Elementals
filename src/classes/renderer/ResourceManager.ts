@@ -1,10 +1,12 @@
 export enum ResourceType {
     MATERIAL,
     ICON,
-    CARD
+    CARD,
+    BACKGROUND
 }
 
 export class ResourceManager {
+    private backgrounds: Map<string, HTMLImageElement> = new Map();
     private materials: Map<string, HTMLImageElement> = new Map();
     private icons: Map<string, HTMLImageElement> = new Map();
     private cards: Map<string, HTMLImageElement> = new Map();
@@ -27,6 +29,10 @@ export class ResourceManager {
             case ResourceType.MATERIAL:
                 img.src = `./assets/materials/${imageName}.png`;
                 this.materials.set(imageName, img);
+                break;
+            case ResourceType.BACKGROUND:
+                img.src = `./assets/backgrounds/${imageName}.png`;
+                this.backgrounds.set(imageName, img);
                 break;
         }
     }
@@ -51,4 +57,12 @@ export class ResourceManager {
         }
         return this.materials.get(name);
     }
+
+    getBackgroundImage(name: string): HTMLImageElement | undefined {
+        if (!this.backgrounds.has(name)) {
+            this.loadImages(ResourceType.BACKGROUND, name);
+        }
+        return this.backgrounds.get(name);
+    }
+    
 }
