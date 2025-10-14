@@ -54,7 +54,7 @@ export class DisplayCardState implements State {
                 console.log("ability clicked");
                 // this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability?.execute(this.game);
                 const ability = GameUtils.getCardById(this.cardId, this.game).data.ability;
-                if (ability) {
+                if (ability && ability.isAvailable(this.game)) {
                     this.game.gameStateChangePool.push(new StateChangeTrigger(STATE_CHANGE_TYPE.ABILITY, ability));
                 }
                 this.returnToPlay();

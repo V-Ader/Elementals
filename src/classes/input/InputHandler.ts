@@ -75,19 +75,6 @@ export class InputController {
                 console.log("table card clicked", i);
                 this.game.gameStateChangePool.push(new StateChangeTrigger(STATE_CHANGE_TYPE.DISPLAY_CARD, this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].id));
                 break;
-                // if ability clicked
-                // const button = this.renderer.cardRenderer.getAbilityButtonPosition(cardPosition);
-                // if ( this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability) {
-                //     if (this.isInsideCard(this.mousePosition.x, this.mousePosition.y, button.x, button.y, button.width, button.height)) {
-                //         console.log("ability clicked");
-                //         // this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability?.execute(this.game);
-                //         const ability = this.game.players.get(PLAYER_ID.PLAYER_1).cards[i].data.ability;
-                //         if (ability) {
-                //             this.game.gameStateChangePool.push(new StateChangeTrigger(STATE_CHANGE_TYPE.ABILITY, ability));
-                //         }
-                //         break;
-                //     }
-                // }
             }
         }
     }

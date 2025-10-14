@@ -21,7 +21,9 @@ export class Game {
     public userPointer = new UserPointer();
     public gameStateChangePool: StateChangeTrigger[] = [];
 
-    public roundOverFlag = false;
+    public roundOverFlag = false;    
+    public gameOverFlag = false;
+
 
     constructor(player1: Player, player2: Player) {
         this.players = new GamePlayers(player1, player2);    
@@ -76,9 +78,7 @@ export class Game {
 
         // move player card into the table
         gamePlayer.cards[player_cards_id] =  gamePlayer.player.cardsInPlay[hand_card_id];
-        if (gamePlayer.cards[player_cards_id].data.ability) {
-            gamePlayer.cards[player_cards_id].data.ability.isActive = true;
-        }
+
         gamePlayer.player.cardsInPlay[hand_card_id] = Card.getEmpty();
 
         this.cardPlayed = true;       
@@ -125,15 +125,25 @@ export class Game {
     isGameOver() {
         return  this.players.get(PLAYER_ID.PLAYER_1).isReadyToEndGame() || this.players.get(PLAYER_ID.PLAYER_2).isReadyToEndGame();
     }
-
-    resolveCardPair(index: number) {
+    
+    getWinnerForPair(index: number): number {
         const player1GamePlayer = this.players.get(PLAYER_ID.PLAYER_1);
         const player2GamePlayer = this.players.get(PLAYER_ID.PLAYER_2);
-        if (!player1GamePlayer || !player2GamePlayer) return;
+        if (!player1GamePlayer || !player2GamePlayer) return 0;
 
         const player_card = player1GamePlayer.cards[index];
         const enemy_card = player2GamePlayer.cards[index];
-        const result = ElementMatrix[player_card.data.element][enemy_card.data.element];
+        return ElementMatrix[player_card.data.element][enemy_card.data.element];
+    }
+    // return 1 if player won, -1 when lost, 0 when draw
+    resolveCardPair(index: number): number {
+        const player1GamePlayer = this.players.get(PLAYER_ID.PLAYER_1);
+        const player2GamePlayer = this.players.get(PLAYER_ID.PLAYER_2);
+        if (!player1GamePlayer || !player2GamePlayer) return 0;
+
+        const player_card = player1GamePlayer.cards[index];
+        const enemy_card = player2GamePlayer.cards[index];
+        const result = this.getWinnerForPair(index);
         if (result === 1) {
             this.players.get(PLAYER_ID.PLAYER_1).player.health -= player_card.data.risk + player1GamePlayer.cards_risks[index];
             player1GamePlayer.cards_risks[index] = 0;
@@ -151,14 +161,19 @@ export class Game {
 
         if (this.players.get(PLAYER_ID.PLAYER_1).player.health <= 0) {
             console.log("Player 2 wins");
-            return;
+            this.gameOverFlag = true;
+            return 0;
         } else if (this.players.get(PLAYER_ID.PLAYER_2).player.health <= 0) {
             console.log("Player 1 wins");
-            return;
+            this.gameOverFlag = true;
+            return 0;
         }
 
         player1GamePlayer.cards[index] = Card.getEmpty();
         player2GamePlayer.cards[index] = Card.getEmpty();
+
+        return result;
+
     }
 
     startNewRound() {

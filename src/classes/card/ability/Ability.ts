@@ -1,12 +1,15 @@
 import { Game } from "../../game/Game.js";
 
 export class Ability {
-    name: string = 'undefined name'; 
+    name: string = 'undefined name';
     description: string = 'undefined description';
-    corelated_card_id: string = '0';
-    isActive: boolean = false;
+    corelated_card_id: string = '0'; //ID karty posiadającej zdolność
 
     execute(game: Game){};
+
+    isAvailable(game: Game): boolean {
+        return true;
+    }
 
     corelateWithCardById(id: string){
         this.corelated_card_id = id;

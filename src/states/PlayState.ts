@@ -53,6 +53,11 @@ export class PlayState implements State {
             this.game.startNewRound();
         }
 
+        if (this.game.gameOverFlag) {
+            this.game.gameOverFlag = false;
+            this.game.startNewGame();
+        }
+
         if (this.game.roundOverFlag) {
             this.waitForNewRound = true;
             this.game.roundOverFlag = false;

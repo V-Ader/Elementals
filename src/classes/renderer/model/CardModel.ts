@@ -1,4 +1,5 @@
-import { Model } from "./Models.js";
+import { Element } from "../../card/Card.js";
+import { Model, Transpose, Color } from "./Models.js";
 
 export class CardModel implements Model {
     width: number;
@@ -9,6 +10,8 @@ export class CardModel implements Model {
     icon: {size: number, padding: number};
     elementIndicator: {circleRadius: number, padding: number};
     actionButton: {width: number, height: number, cornerRadius: number, fontSize: number};
+
+    trnasformations: { transition: Transpose; colorMask: Color };
 
     constructor(
         width: number = 180,
@@ -27,6 +30,7 @@ export class CardModel implements Model {
             this.icon = icon;
             this.elementIndicator = elementIndicator;
             this.actionButton = actionButton;
+            this.trnasformations = { transition: new Transpose(), colorMask: new Color()};
         }
     
     resize(scale: number): CardModel {

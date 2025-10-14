@@ -24,6 +24,8 @@ export class CardRenderer {
 
         // Draw card ability button
         this.renderAbilityButton(card, { x: x, y: y + model.height - model.actionButton.height }, model);
+
+        this.renderColorMask(card, { x, y }, model);
     }
 
     renderCenered(card: Card, { x, y }: { x: number, y: number }, model: CardModel) {
@@ -69,8 +71,8 @@ export class CardRenderer {
         var model =  this.effectsController.apply(new CardModel(), card_id);
 
         const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
-        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
-        const y = 100 * this.getScale();
+        const x = model.trnasformations.transition.x + (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = model.trnasformations.transition.y + 100 * this.getScale();
         return { x, y, model: model };
     }
 
@@ -78,8 +80,8 @@ export class CardRenderer {
         var model =  this.effectsController.apply(new CardModel(), card_id);
 
         const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
-        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
-        const y = this.ctx.canvas.height / 2 - 100 * this.getScale();
+        const x = model.trnasformations.transition.x + (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = model.trnasformations.transition.y + this.ctx.canvas.height / 2 - 100 * this.getScale();
         return { x, y, model: model};
     }
 
@@ -87,8 +89,8 @@ export class CardRenderer {
         var model =  this.effectsController.apply(new CardModel(), card_id);
 
         const totalWidth = 4 * (model.width + model.maring * 2) - model.maring * 2;
-        const x = (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);        
-        const y = this.ctx.canvas.height - (model.height + model.maring * 2);
+        const x = model.trnasformations.transition.x + (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);        
+        const y = model.trnasformations.transition.y + this.ctx.canvas.height - (model.height + model.maring * 2);
         return { x, y, model: model};
     }
 
@@ -151,6 +153,14 @@ export class CardRenderer {
             this.ctx.restore();
         }
     }
+
+    // draw a drawRoundedRect of color defined in card.trnasformations.colorMask with alpha
+    private renderColorMask(card: Card, { x, y }: { x: number, y: number }, model: CardModel) {
+        this.ctx.fillStyle = `rgba(${Math.floor(model.trnasformations.colorMask.r)}, ${Math.floor(model.trnasformations.colorMask.g )}, ${Math.floor(model.trnasformations.colorMask.b )}, ${model.trnasformations.colorMask.a})`;
+        this.drawRoundedRect(x, y, model.width, model.height, model.cornerRadius);
+        this.ctx.fill();
+    }
+
 
     private getElementString(element: Element): string {
         switch (element) {
