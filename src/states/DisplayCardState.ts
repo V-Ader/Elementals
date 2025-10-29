@@ -8,7 +8,7 @@ import { CardModel } from "../classes/renderer/model/CardModel.js";
 import { State, StateMachine } from "../classes/StateMachine.js";
 import { PlayState } from "./PlayState.js";
 import { EffectFactory } from "../classes/renderer/effect/effects/EffectFactory.js";
-import { DisplayCardRenderer } from "../classes/renderer/customRenderer/DisplayCardRenderer.js";
+import { DisplayCardRenderer } from "../classes/renderer/customStateRenderer/DisplayCardRenderer.js";
 import { StateChangeTrigger, STATE_CHANGE_TYPE } from "./StateChangeTrigger.js";
 
 export class DisplayCardState implements State {

@@ -7,6 +7,7 @@ import { ResourceManager } from "./ResourceManager.js";
 import { PLAYER_ID } from "../player/Player.js";
 import { EffectsController } from "./effect/EffectsController.js";
 import { CardModel } from "./model/CardModel.js";
+import { RendererScreenHelper } from "./RendererScreenHelper.js";
 
 
 export class GameRenderer {
@@ -14,10 +15,10 @@ export class GameRenderer {
     private healthRenderer: HealthRenderer;
     private userPointerRenderer: UserPointerRenderer;
 
-    constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {
-        this.cardRenderer = new CardRenderer(ctx, this.resourceManager);
-        this.userPointerRenderer = new UserPointerRenderer(ctx, this.cardRenderer);
-        this.healthRenderer = new HealthRenderer(ctx, this.resourceManager);
+    constructor(private rendererScreenHelper: RendererScreenHelper, private resourceManager: ResourceManager) {
+        this.cardRenderer = new CardRenderer(rendererScreenHelper, this.resourceManager);
+        this.userPointerRenderer = new UserPointerRenderer(rendererScreenHelper, this.cardRenderer);
+        this.healthRenderer = new HealthRenderer(rendererScreenHelper, this.resourceManager);
     }
 
     render(deltaTime: number, game: Game, inputController: InputController | null = null) { 
@@ -25,7 +26,7 @@ export class GameRenderer {
         this.cardRenderer.effectsController.update(deltaTime);
 
         // Clear the canvas
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.rendererScreenHelper.gameCtx.clearRect(0, 0, this.rendererScreenHelper.gameCtx.canvas.width, this.rendererScreenHelper.gameCtx.canvas.height);
 
         // Draw background
         this.renderBackground();
@@ -51,19 +52,19 @@ export class GameRenderer {
 
     public getWindowSize() {
         return {
-            width: this.ctx.canvas.width,
-            height: this.ctx.canvas.height
+            width: this.rendererScreenHelper.gameCtx.canvas.width,
+            height: this.rendererScreenHelper.gameCtx.canvas.height
         };
     }
 
     public getContext() {
-        return this.ctx;
+        return this.rendererScreenHelper.gameCtx;
     }
 
     private renderBackground() {
         const background = this.resourceManager.getBackgroundImage('background1');
         if (background) {
-            this.ctx.drawImage(background, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+            this.rendererScreenHelper.backgroundCtx.drawImage(background, 0, 0, this.rendererScreenHelper.backgroundCtx.canvas.width, this.rendererScreenHelper.backgroundCtx.canvas.height);
         }
     }
 
@@ -101,17 +102,17 @@ export class GameRenderer {
     }
 
     private renderSlotRisk(risk: number, x: number, y: number, width: number) {
-        this.ctx.fillStyle = "black";
-        this.ctx.font = "20px Arial";
-        this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "middle";
-        this.ctx.fillText(risk.toString(), x + width / 2, y);
+        this.rendererScreenHelper.gameCtx.fillStyle = "black";
+        this.rendererScreenHelper.gameCtx.font = "20px Arial";
+        this.rendererScreenHelper.gameCtx.textAlign = "center";
+        this.rendererScreenHelper.gameCtx.textBaseline = "middle";
+        this.rendererScreenHelper.gameCtx.fillText(risk.toString(), x + width / 2, y);
     }
 
     public getEndTurnButtonPosition() {
         return {
-            x: this.ctx.canvas.width - 150,
-            y: this.ctx.canvas.height - 70,
+            x: this.rendererScreenHelper.gameCtx.canvas.width - 150,
+            y: this.rendererScreenHelper.gameCtx.canvas.height - 70,
             width: 100,
             height: 40
         };
@@ -120,13 +121,13 @@ export class GameRenderer {
     private renderEndTurnButton() {
         const text = "End Turn";
         const button = this.getEndTurnButtonPosition();
-        // this.ctx.fillStyle = button.isHovered ? '#666666' : '#444444';
-        this.ctx.fillRect(button.x, button.y, button.width, button.height);
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '16px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(text, button.x + button.width / 2, button.y + button.height / 2);
+        // this.rendererScreenHelper.gameCtx.fillStyle = button.isHovered ? '#666666' : '#444444';
+        this.rendererScreenHelper.gameCtx.fillRect(button.x, button.y, button.width, button.height);
+        this.rendererScreenHelper.gameCtx.fillStyle = 'white';
+        this.rendererScreenHelper.gameCtx.font = '16px Arial';
+        this.rendererScreenHelper.gameCtx.textAlign = 'center';
+        this.rendererScreenHelper.gameCtx.textBaseline = 'middle';
+        this.rendererScreenHelper.gameCtx.fillText(text, button.x + button.width / 2, button.y + button.height / 2);
     }
     
 }

@@ -2,13 +2,14 @@ import { Card, Element } from "../card/Card.js";
 import { WindowResizeEffect } from "./effect/effects/WindowResizeEffect.js";
 import { EffectsController } from "./effect/EffectsController.js";
 import { CardModel } from "./model/CardModel.js";
+import { RendererScreenHelper } from "./RendererScreenHelper.js";
 import { ResourceManager } from "./ResourceManager.js";
 
 export class CardRenderer {
 
     public effectsController: EffectsController;
 
-    constructor(private ctx: CanvasRenderingContext2D, private resourceManager: ResourceManager) {
+    constructor(private rendererScreenHelprt: RendererScreenHelper, private resourceManager: ResourceManager) {
         this.effectsController = new EffectsController();
     }
 
@@ -41,26 +42,26 @@ export class CardRenderer {
 
         // Draw button background
         if (image) {
-            this.ctx.save();
+            this.rendererScreenHelprt.gameCtx.save();
             this.drawRoundedRect(x, y, model.actionButton.width, model.actionButton.height, model.actionButton.cornerRadius);
-            this.ctx.clip();
-            this.ctx.drawImage(image, x, y, model.actionButton.width, model.actionButton.height);
-            this.ctx.restore();
+            this.rendererScreenHelprt.gameCtx.clip();
+            this.rendererScreenHelprt.gameCtx.drawImage(image, x, y, model.actionButton.width, model.actionButton.height);
+            this.rendererScreenHelprt.gameCtx.restore();
         } else {
-            this.ctx.fillStyle = "lightgray";
-            this.ctx.strokeStyle = "black";
-            this.ctx.lineWidth = 1;
+            this.rendererScreenHelprt.gameCtx.fillStyle = "lightgray";
+            this.rendererScreenHelprt.gameCtx.strokeStyle = "black";
+            this.rendererScreenHelprt.gameCtx.lineWidth = 1;
             this.drawRoundedRect(x, y, model.actionButton.width, model.actionButton.height, model.actionButton.cornerRadius);
-            this.ctx.fill();
-            this.ctx.stroke();
+            this.rendererScreenHelprt.gameCtx.fill();
+            this.rendererScreenHelprt.gameCtx.stroke();
         }
 
         // Draw button text
-        this.ctx.fillStyle = "black";
-        this.ctx.font = `${model.actionButton.fontSize}px Arial`;
-        this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "middle";
-        this.ctx.fillText(card.data.ability?.name, x + model.actionButton.width / 2, y + model.actionButton.height / 2);
+        this.rendererScreenHelprt.gameCtx.fillStyle = "black";
+        this.rendererScreenHelprt.gameCtx.font = `${model.actionButton.fontSize}px Arial`;
+        this.rendererScreenHelprt.gameCtx.textAlign = "center";
+        this.rendererScreenHelprt.gameCtx.textBaseline = "middle";
+        this.rendererScreenHelprt.gameCtx.fillText(card.data.ability?.name, x + model.actionButton.width / 2, y + model.actionButton.height / 2);
     }
 
     getAbilityButtonPosition(cardarea: { x: number, y: number, model: CardModel}) {
@@ -71,7 +72,7 @@ export class CardRenderer {
         var model =  this.effectsController.apply(new CardModel(), card_id);
 
         const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
-        const x = model.trnasformations.transition.x + (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const x = model.trnasformations.transition.x + (this.rendererScreenHelprt.gameCtx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
         const y = model.trnasformations.transition.y + 100 * this.getScale();
         return { x, y, model: model };
     }
@@ -80,8 +81,8 @@ export class CardRenderer {
         var model =  this.effectsController.apply(new CardModel(), card_id);
 
         const totalWidth = 3 * (model.width + model.maring * 2) - model.maring * 2;
-        const x = model.trnasformations.transition.x + (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
-        const y = model.trnasformations.transition.y + this.ctx.canvas.height / 2 - 100 * this.getScale();
+        const x = model.trnasformations.transition.x + (this.rendererScreenHelprt.gameCtx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);
+        const y = model.trnasformations.transition.y + this.rendererScreenHelprt.gameCtx.canvas.height / 2 - 100 * this.getScale();
         return { x, y, model: model};
     }
 
@@ -89,8 +90,8 @@ export class CardRenderer {
         var model =  this.effectsController.apply(new CardModel(), card_id);
 
         const totalWidth = 4 * (model.width + model.maring * 2) - model.maring * 2;
-        const x = model.trnasformations.transition.x + (this.ctx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);        
-        const y = model.trnasformations.transition.y + this.ctx.canvas.height - (model.height + model.maring * 2);
+        const x = model.trnasformations.transition.x + (this.rendererScreenHelprt.gameCtx.canvas.width - totalWidth) / 2 + cardNumber * (model.width + model.maring * 2);        
+        const y = model.trnasformations.transition.y + this.rendererScreenHelprt.gameCtx.canvas.height - (model.height + model.maring * 2);
         return { x, y, model: model};
     }
 
@@ -102,9 +103,9 @@ export class CardRenderer {
         const cornerRadius = 10;
         const image = this.resourceManager.getCardImage(card.data.name);
 
-        this.ctx.save();
+        this.rendererScreenHelprt.gameCtx.save();
         this.drawRoundedRect(x, y, model.width, model.height, cornerRadius);
-        this.ctx.clip();
+        this.rendererScreenHelprt.gameCtx.clip();
 
         if (image) {
             const imageAspectRatio = image.width / image.height;
@@ -124,18 +125,18 @@ export class CardRenderer {
                 drawY = y;
             }
 
-            this.ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+            this.rendererScreenHelprt.gameCtx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
         } else {
-            this.ctx.fillStyle = "white";
-            this.ctx.fillRect(x, y, model.width, model.height);
+            this.rendererScreenHelprt.gameCtx.fillStyle = "white";
+            this.rendererScreenHelprt.gameCtx.fillRect(x, y, model.width, model.height);
         }
 
-        this.ctx.restore();
+        this.rendererScreenHelprt.gameCtx.restore();
 
-        this.ctx.strokeStyle = "black";
-        this.ctx.lineWidth = 2;
+        this.rendererScreenHelprt.gameCtx.strokeStyle = "black";
+        this.rendererScreenHelprt.gameCtx.lineWidth = 2;
         this.drawRoundedRect(x, y, model.width, model.height, cornerRadius);
-        this.ctx.stroke();
+        this.rendererScreenHelprt.gameCtx.stroke();
     }
 
     private drawCardSymbol(card: Card, x: number, y: number, model: CardModel) {
@@ -144,21 +145,21 @@ export class CardRenderer {
         const icon = this.resourceManager.getIconImage(`${this.getElementString(card.data.element)}`);
 
         if (icon) {
-            this.ctx.save();
-            this.ctx.beginPath();
-            this.ctx.arc(iconX, iconY, model.icon.size / 2, 0, Math.PI * 2);
-            this.ctx.closePath();
-            this.ctx.clip();
-            this.ctx.drawImage(icon, iconX - model.icon.size / 2, iconY - model.icon.size / 2, model.icon.size, model.icon.size);
-            this.ctx.restore();
+            this.rendererScreenHelprt.gameCtx.save();
+            this.rendererScreenHelprt.gameCtx.beginPath();
+            this.rendererScreenHelprt.gameCtx.arc(iconX, iconY, model.icon.size / 2, 0, Math.PI * 2);
+            this.rendererScreenHelprt.gameCtx.closePath();
+            this.rendererScreenHelprt.gameCtx.clip();
+            this.rendererScreenHelprt.gameCtx.drawImage(icon, iconX - model.icon.size / 2, iconY - model.icon.size / 2, model.icon.size, model.icon.size);
+            this.rendererScreenHelprt.gameCtx.restore();
         }
     }
 
     // draw a drawRoundedRect of color defined in card.trnasformations.colorMask with alpha
     private renderColorMask(card: Card, { x, y }: { x: number, y: number }, model: CardModel) {
-        this.ctx.fillStyle = `rgba(${Math.floor(model.trnasformations.colorMask.r)}, ${Math.floor(model.trnasformations.colorMask.g )}, ${Math.floor(model.trnasformations.colorMask.b )}, ${model.trnasformations.colorMask.a})`;
+        this.rendererScreenHelprt.gameCtx.fillStyle = `rgba(${Math.floor(model.trnasformations.colorMask.r)}, ${Math.floor(model.trnasformations.colorMask.g )}, ${Math.floor(model.trnasformations.colorMask.b )}, ${model.trnasformations.colorMask.a})`;
         this.drawRoundedRect(x, y, model.width, model.height, model.cornerRadius);
-        this.ctx.fill();
+        this.rendererScreenHelprt.gameCtx.fill();
     }
 
 
@@ -178,17 +179,17 @@ export class CardRenderer {
     }
 
     private drawRoundedRect(x: number, y: number, width: number, height: number, radius: number) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(x + radius, y);
-        this.ctx.lineTo(x + width - radius, y);
-        this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-        this.ctx.lineTo(x + width, y + height - radius);
-        this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-        this.ctx.lineTo(x + radius, y + height);
-        this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-        this.ctx.lineTo(x, y + radius);
-        this.ctx.quadraticCurveTo(x, y, x + radius, y);
-        this.ctx.closePath();
+        this.rendererScreenHelprt.gameCtx.beginPath();
+        this.rendererScreenHelprt.gameCtx.moveTo(x + radius, y);
+        this.rendererScreenHelprt.gameCtx.lineTo(x + width - radius, y);
+        this.rendererScreenHelprt.gameCtx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        this.rendererScreenHelprt.gameCtx.lineTo(x + width, y + height - radius);
+        this.rendererScreenHelprt.gameCtx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        this.rendererScreenHelprt.gameCtx.lineTo(x + radius, y + height);
+        this.rendererScreenHelprt.gameCtx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        this.rendererScreenHelprt.gameCtx.lineTo(x, y + radius);
+        this.rendererScreenHelprt.gameCtx.quadraticCurveTo(x, y, x + radius, y);
+        this.rendererScreenHelprt.gameCtx.closePath();
     }
 
     private drawCardRisk(card: Card, x: number, y: number, model: CardModel) {
@@ -198,17 +199,17 @@ export class CardRenderer {
         const circleY = y + circleRadius + padding;
 
         // Draw semi-transparent gray circle
-        this.ctx.fillStyle = "rgba(128, 128, 128, 0.5)";
-        this.ctx.beginPath();
-        this.ctx.arc(circleX, circleY, circleRadius, 0, Math.PI * 2);
-        this.ctx.closePath();
-        this.ctx.fill();
+        this.rendererScreenHelprt.gameCtx.fillStyle = "rgba(128, 128, 128, 0.5)";
+        this.rendererScreenHelprt.gameCtx.beginPath();
+        this.rendererScreenHelprt.gameCtx.arc(circleX, circleY, circleRadius, 0, Math.PI * 2);
+        this.rendererScreenHelprt.gameCtx.closePath();
+        this.rendererScreenHelprt.gameCtx.fill();
 
         // Draw white text
-        this.ctx.fillStyle = "white";
-        this.ctx.font = `${model.fontSize}px Arial`;
-        this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "middle";
-        this.ctx.fillText(card.data.risk.toString(), circleX, circleY);
+        this.rendererScreenHelprt.gameCtx.fillStyle = "white";
+        this.rendererScreenHelprt.gameCtx.font = `${model.fontSize}px Arial`;
+        this.rendererScreenHelprt.gameCtx.textAlign = "center";
+        this.rendererScreenHelprt.gameCtx.textBaseline = "middle";
+        this.rendererScreenHelprt.gameCtx.fillText(card.data.risk.toString(), circleX, circleY);
     }
 }

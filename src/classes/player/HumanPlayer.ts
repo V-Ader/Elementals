@@ -4,7 +4,7 @@ import { Player, PLAYER_ID } from "./Player.js";
 
 
 export class HumanPlayer extends Player {
-    constructor(public name: string, player_id: PLAYER_ID) {
+    constructor(public name: string, public player_id: PLAYER_ID) {
         super(name, player_id);
     }
     

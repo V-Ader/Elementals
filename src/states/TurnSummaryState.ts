@@ -3,6 +3,7 @@ import { PLAYER_ID } from "../classes/player/Player.js";
 import { ColorMaskEffect } from "../classes/renderer/effect/effects/ColorMaskEffect.js";
 import { ZoomInEffect } from "../classes/renderer/effect/effects/ZoomInEffect.js";
 import { GameRenderer } from "../classes/renderer/GameRenderer.js";
+import { RendererScreenHelper } from "../classes/renderer/RendererScreenHelper.js";
 import { State, StateMachine } from "../classes/StateMachine.js";
 import { PlayState } from "./PlayState.js";
 
@@ -12,7 +13,7 @@ export class TurnSummaryState implements State {
     private iterationTime = 2;
 
     constructor(
-        private canvas: HTMLCanvasElement,
+        private rendererHelper: RendererScreenHelper,
         private game: Game,
         private renderer: GameRenderer,
         private returnToPlay: () => void

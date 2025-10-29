@@ -7,6 +7,7 @@ import { TurnSummaryState } from "./TurnSummaryState.js";
 import { STATE_CHANGE_TYPE } from "./StateChangeTrigger.js";
 import { DisplayCardState } from "./DisplayCardState.js";
 import { ResourceManager } from "../classes/renderer/ResourceManager.js";
+import { RendererScreenHelper } from "../classes/renderer/RendererScreenHelper.js";
 
 
 export class PlayState implements State {
@@ -17,15 +18,14 @@ export class PlayState implements State {
     private states: Map<string, State> = new Map();
 
     constructor(
-        private ctx: CanvasRenderingContext2D,
-        private canvas: HTMLCanvasElement,
-        private game: Game,
         private stateMachine: StateMachine,
+        private rendererScreenHelper: RendererScreenHelper,
+        private game: Game,
         private resourceManager: ResourceManager,
-        private renderer = new GameRenderer(ctx, resourceManager)
+        private renderer = new GameRenderer(rendererScreenHelper, resourceManager)
     ) {
-        this.inputController = new InputController(this.canvas, this.game, this.renderer);
-        this.states.set('turnSummary', new TurnSummaryState(this.canvas, this.game, this.renderer, () => this.stateMachine.changeState(this)));
+        this.inputController = new InputController(this.rendererScreenHelper.gameCtx.canvas, this.game, this.renderer);
+        this.states.set('turnSummary', new TurnSummaryState(this.rendererScreenHelper, this.game, this.renderer, () => this.stateMachine.changeState(this)));
         // this.states.set('applyAbility', new ApplyAbilityState(this.game, , this.renderer,() => this.stateMachine.changeState(this)));
     }
 

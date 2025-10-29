@@ -3,9 +3,10 @@ import { UserPointer } from "../UserPointer.js";
 import { InputController } from "../input/InputHandler.js";
 import { CardRenderer } from "./CardRenderer.js";
 import { CardModel } from "./model/CardModel.js";
+import { RendererScreenHelper } from "./RendererScreenHelper.js";
 
 export class UserPointerRenderer {
-    constructor(private ctx: CanvasRenderingContext2D, private cardRenderer: CardRenderer) {}
+    constructor(private rendererHelper: RendererScreenHelper, private cardRenderer: CardRenderer) {}
 
     render(controller: UserPointer, inputController: InputController) {
         if (controller.card.data.element !== Element.UNDEFINED) {
