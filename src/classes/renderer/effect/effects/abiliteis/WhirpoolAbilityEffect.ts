@@ -23,19 +23,19 @@ export class WhirpoolAbilityEffect extends Effect<CardModel> {
 
     update(deltaTime: number): boolean {
         this.elapsed += deltaTime;
-
-        // uruchom ability po opóźnieniu (tylko raz)
-        if (!this.abilityExecuted && this.abilityExecutionFunction && this.elapsed >= this.abilityExecutionDelay) {
-            this.abilityExecutionFunction();
-            this.abilityExecuted = true;
-        }
-
         // true = efekt nadal trwa
         console.log(this.elapsed, this.duration);
         return this.elapsed < this.duration;
     }
 
     apply(card: CardModel): CardModel {
+        
+        // uruchom ability po opóźnieniu (tylko raz)
+        if (!this.abilityExecuted && this.abilityExecutionFunction && this.elapsed >= this.abilityExecutionDelay) {
+            this.abilityExecutionFunction();
+            this.abilityExecuted = true;
+        }
+
         return card;
     }
 }

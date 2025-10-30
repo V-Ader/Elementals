@@ -24,12 +24,6 @@ export class ChangeRiskAbilityEffect extends Effect<CardModel> {
     update(deltaTime: number): boolean {
         this.elapsed += deltaTime;
 
-        // uruchom ability po opóźnieniu (tylko raz)
-        if (!this.abilityExecuted && this.abilityExecutionFunction && this.elapsed >= this.abilityExecutionDelay) {
-            this.abilityExecutionFunction();
-            this.abilityExecuted = true;
-        }
-
         // true = efekt nadal trwa
         console.log(this.elapsed, this.duration);
         return this.elapsed < this.duration;
@@ -45,6 +39,12 @@ export class ChangeRiskAbilityEffect extends Effect<CardModel> {
         // sinusoidalne powiększenie i powrót
         const scale = 1 + Math.sin(progress * Math.PI);
         card.fontSize = this.originalFontSize * scale;
+
+        // uruchom ability po opóźnieniu (tylko raz)
+        if (!this.abilityExecuted && this.abilityExecutionFunction && this.elapsed >= this.abilityExecutionDelay) {
+            this.abilityExecutionFunction();
+            this.abilityExecuted = true;
+        }
 
         return card;
     }

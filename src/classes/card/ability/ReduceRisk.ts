@@ -12,5 +12,6 @@ export class ReduceRisk extends Ability {
             }
             return card;
         });
+        this.isUsed = true;
     }
 }

@@ -8,6 +8,9 @@ export class Flooding extends Ability {
     description = "Change the element of adjecent card to Water";
 
     isAvailable(game: Game): boolean {
+        if (this.isUsed) {
+            return false;
+        }
         if (this.isCardPlayers(game)) {
             const card = GameUtils.getCardById(this.corelated_card_id, game);
             const cardPosition = game.players.player_1.cards.indexOf(card);
@@ -32,6 +35,6 @@ export class Flooding extends Ability {
         }
 
         adjacentCard.data.element = Element.WATER;
-
+        this.isUsed = true;
     }
 }

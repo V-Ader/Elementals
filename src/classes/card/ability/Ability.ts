@@ -5,10 +5,12 @@ export class Ability {
     description: string = 'undefined description';
     corelated_card_id: string = '0'; //ID karty posiadającej zdolność
 
+    isUsed: boolean = false;
+
     execute(game: Game){};
 
     isAvailable(game: Game): boolean {
-        return true;
+        return !this.isUsed;
     }
 
     corelateWithCardById(id: string){

@@ -12,9 +12,13 @@ export class Whirpool extends Ability {
         let tmp = game.players.player_1.cards[p1];
         game.players.player_1.cards[p1] = game.players.player_1.cards[p2];
         game.players.player_1.cards[p2] = tmp;
+        this.isUsed = true;
     }
 
     isAvailable(game: Game): boolean {
+        if (this.isUsed) {
+            return false;
+        }
         let counter = 0;
         if (this.isCardPlayers(game)) {
             game.players.player_1.cards.forEach(card => {
