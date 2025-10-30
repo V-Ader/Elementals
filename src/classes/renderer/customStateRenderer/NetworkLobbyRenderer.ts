@@ -8,6 +8,7 @@ import { PLAYER_ID } from "../../player/Player.js";
 import { EffectsController } from "../effect/EffectsController.js";
 import { CardModel } from "../model/CardModel.js";
 import { RendererScreenHelper } from "../RendererScreenHelper.js";
+import { Button } from "../ui/component/button/Button.js";
 
 
 export class NetworkLobbyRenderer {
@@ -16,50 +17,49 @@ export class NetworkLobbyRenderer {
     }
 
     render() { 
-      this.renderJoinButtonPosition();
-      this.renderReturnButtonPosition();
+        this.renderBackground();
+        
+        this.renderJoinButtonPosition();
+        this.renderReturnButtonPosition();
     }
 
-    public getJoinButtonPosition() {
-        return {
-            x: this.rendererHelper.gameCtx.canvas.width / 2 - 50,
-            y: this.rendererHelper.gameCtx.canvas.height - 70,
-            width: 100,
-            height: 40
-        };
+    private renderBackground() {
+        const background = this.resourceManager.getBackgroundImage("background2");
+        if (background) {
+            this.rendererHelper.backgroundCtx.drawImage(background, 0, 0, this.rendererHelper.backgroundCtx.canvas.width, this.rendererHelper.backgroundCtx.canvas.height);
+        }
+        this.rendererHelper.gameCtx.clearRect(0, 0, this.rendererHelper.gameCtx.canvas.width, this.rendererHelper.gameCtx.canvas.height);
+
+    }
+
+    public getJoinButton() {
+        return new Button(
+            this.rendererHelper.gameCtx.canvas.width / 2 - 50,
+            this.rendererHelper.gameCtx.canvas.height - 150,
+            100,
+            40,
+            "Join"
+        );
     }
 
     private renderJoinButtonPosition() {
-        const text = "Join";
-        const button = this.getJoinButtonPosition();
-        // this.rendererHelper.gameCtx.fillStyle = button.isHovered ? '#666666' : '#444444';
-        this.rendererHelper.gameCtx.fillRect(button.x, button.y, button.width, button.height);
-        this.rendererHelper.gameCtx.fillStyle = 'white';
-        this.rendererHelper.gameCtx.font = '16px Arial';
-        this.rendererHelper.gameCtx.textAlign = 'center';
-        this.rendererHelper.gameCtx.textBaseline = 'middle';
-        this.rendererHelper.gameCtx.fillText(text, button.x + button.width / 2, button.y + button.height / 2);
+        const button = this.getJoinButton();
+        button.render(this.rendererHelper);
     }
 
     public getReturnButtonPosition() {
-        return {
-            x: this.rendererHelper.gameCtx.canvas.width / 2 - 50,
-            y: this.rendererHelper.gameCtx.canvas.height - 150,
-            width: 100,
-            height: 40
-        };
+        return new Button(
+            this.rendererHelper.gameCtx.canvas.width / 2 - 50,
+            this.rendererHelper.gameCtx.canvas.height - 70,
+            100,
+            40,
+            "Back"
+        );
     }
 
     private renderReturnButtonPosition() {
-        const text = "Back";
-        const button = this.getReturnButtonPosition();
-        // this.rendererHelper.gameCtx.fillStyle = button.isHovered ? '#666666' : '#444444';
-        this.rendererHelper.gameCtx.fillRect(button.x, button.y, button.width, button.height);
-        this.rendererHelper.gameCtx.fillStyle = 'white';
-        this.rendererHelper.gameCtx.font = '16px Arial';
-        this.rendererHelper.gameCtx.textAlign = 'center';
-        this.rendererHelper.gameCtx.textBaseline = 'middle';
-        this.rendererHelper.gameCtx.fillText(text, button.x + button.width / 2, button.y + button.height / 2);
+        const button = this.getReturnButtonPosition();        
+        button.render(this.rendererHelper);
     }
     
 }

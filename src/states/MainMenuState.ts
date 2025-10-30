@@ -32,10 +32,6 @@ export class MainMenuState implements State {
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {
-        if (event instanceof MouseEvent) {
-            const {mouseX, mouseY} = this.rendererHelper.getMousePositionInGame(event);
-            this.renderer.renderCursor(mouseX, mouseY);
-        }
         if (event instanceof MouseEvent && event.type === "mousedown") {
             const {mouseX, mouseY} = this.rendererHelper.getMousePositionInGame(event);
 

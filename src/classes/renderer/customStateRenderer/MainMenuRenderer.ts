@@ -23,15 +23,10 @@ export class MainMenuRenderer {
             this.rendererHelper.backgroundCtx.fillStyle = "#222";
             this.rendererHelper.backgroundCtx.fillRect(0, 0, this.rendererHelper.gameCtx.canvas.width, this.rendererHelper.gameCtx.canvas.height);
         }
+        this.rendererHelper.gameCtx.clearRect(0, 0, this.rendererHelper.gameCtx.canvas.width, this.rendererHelper.gameCtx.canvas.height);
     }
 
     private renderMenuPanel() {
-        // const panelWidth = this.rendererHelper.gameCtx.canvas.width * 0.3;
-        // const panelHeight = this.rendererHelper.gameCtx.canvas.height;
-        // this.rendererHelper.gameCtx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        // this.rendererHelper.gameCtx.fillRect(0, 0, panelWidth, panelHeight);
-
-        // Nagłówek
         this.rendererHelper.gameCtx.fillStyle = "#0a0606ff";
         this.rendererHelper.gameCtx.font = "bold 36px Arial";
         this.rendererHelper.gameCtx.textAlign = "left";
@@ -76,17 +71,4 @@ export class MainMenuRenderer {
          this.rendererHelper.gameCtx.fillText(option, x + 20, y + 30);
         });
     }
-
-    // draw a circle at the cursor position
-    public renderCursor(x: number, y: number) {
-
-
-     this.rendererHelper.gameCtx.fillStyle = "red";
-     this.rendererHelper.gameCtx.beginPath();
-     this.rendererHelper.gameCtx.arc(x, y, 10, 0, Math.PI * 2);
-     this.rendererHelper.gameCtx.closePath();
-     this.rendererHelper.gameCtx.fill();
-    }
-
-    
 }

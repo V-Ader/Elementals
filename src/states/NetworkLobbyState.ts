@@ -43,18 +43,15 @@ export class NetworkLobbyState implements State {
     }
 
     handleInput(event: MouseEvent | KeyboardEvent) {
-        if (event instanceof MouseEvent && event.type === "click") {
-            const mouseX = event.clientX;
-            const mouseY = event.clientY;
-            const joinButton = this.renderer.getJoinButtonPosition();
-            if (mouseX >= joinButton.x && mouseX <= joinButton.x + joinButton.width &&
-                mouseY >= joinButton.y && mouseY <= joinButton.y + joinButton.height) {
+        if (event instanceof MouseEvent && event.type === "mousedown") {
+            const {mouseX, mouseY} = this.rendererHelper.getMousePositionInGame(event);
+            const joinButton = this.renderer.getJoinButton();
+            if (joinButton.isHovered(mouseX, mouseY)) {
                 console.log("Join button clicked");
                 return;
             }
             const returnButton = this.renderer.getReturnButtonPosition();
-            if (mouseX >= returnButton.x && mouseX <= returnButton.x + returnButton.width &&
-                mouseY >= returnButton.y && mouseY <= returnButton.y + returnButton.height) {
+            if (returnButton.isHovered(mouseX, mouseY)) {
                 console.log("Return button clicked");
                 this.returnToMenu();
                 return;
